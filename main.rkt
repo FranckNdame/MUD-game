@@ -62,8 +62,16 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 
 
+;; assv is similar to assq but works according to eqv?
+(define (assv-ref assvlist id)
+  (cdr (assv id assvlist)))
 
-
+;; This wrapper function will take an id and a list of tokens
+(define (lookup id tokens)
+  (let* ((record (assv-ref decisiontable id))
+         (keylist (get-keywords id))
+         (index (index-of-largest-number (list-of-lengths keylist tokens)))) (if index
+                                                                                 (cadr (list-ref record index)) #f)))
 
 
 
