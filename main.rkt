@@ -75,34 +75,25 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 
 
-;; Getting the user's input
-(define (command)
-  (let* ((input (read-line))
-         (string-tokens (string-tokenize input))
-         (tokens (map string->symbol string-tokens))
-         (cmd (car tokens)))   
-    ;; Conditional expressions based on the input
-    [cond
-      ;; Command explanation
-      ((eq? cmd 'help)
-       (format #t "
-\nInstructions:\n=============================\n
-Start: Starts the game.\n
-Search <term>: Search an item\n
-Quit: Quit the game\n=============================\n \n"))
-     
+(define (recommend initial-id)
+  (let loop ((id initial-id))
+    (format #t "~a\n> " (get-response id))
+    (let* ((input (read-line))
+           (string-tokens (string-tokenize input))
+           (tokens (map string->symbol string-tokens)))
+      (let ((response (lookup id tokens)))
+        (cond ((eq? #f response)
+               (format #t(loop id))
+               ((eq? 'gory (format #t "huh? I didn’t understand that! ")
+                     response)
+                "Searching for gory horror films ....\n")
+               (exit))
+              ((eq? 'non-gory response)
+               (format #t "Searching for non-gory scarey films ....\n")
+               (exit))
+              ((eq? 'quit response)
+               (format #t "So Long, and Thank you master...\n")
+               (exit)) (else
+                        (loop response)))))))
 
-      ((eq? cmd 'start)
-       (format #t "You are in a room, you can see a bag and a coffin\n"))
-      ;; Break the loop
-      ((eq? cmd 'quit)
-       (exit))
-      ;; Search for something
-      ((eq? cmd 'search)
-       (format #t "Searching for ~a...\n" (cadr tokens)))
-      ;; Error handling
-      (else
-       (format #t "Sorry, I can't quite understand what you mean.\n"))])
-
-  (command))
-(command)
+(recommend 1)
