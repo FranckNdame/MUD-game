@@ -20,6 +20,11 @@
     (7 "You are now equiped. Watch this space!")
     ))
 
+;; Defining actions
+(define look '(((directions) look) ((look) look) ((examine room) look)))
+(define quit '(((exit game) quit) ((quit game) quit) ((exit) quit) ((quit) quit)))
+(define actions `(,@look ,@quit))
+
 (define decisiontable
   '((1 ((open search bag) 2) ((open search coffin) 3) ((open search door) 4) ((look around)1))
   

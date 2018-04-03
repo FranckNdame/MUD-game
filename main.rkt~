@@ -47,34 +47,53 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 
 
-;; Getting the user's input
-(define (command)
-  (let* ((input (read-line))
-         (string-tokens (string-tokenize input))
-         (tokens (map string->symbol string-tokens))
-         (cmd (car tokens)))   
-    ;; Conditional expressions based on the input
-    [cond
-      ;; Command explanation
-      ((eq? cmd 'help)
-       (format #t "
-\nInstructions:\n=============================\n
-Start: Starts the game.\n
-Search <term>: Search an item\n
-Quit: Quit the game\n=============================\n \n"))
-     
 
-      ((eq? cmd 'start)
-       (format #t "You are in a room, you can see a bag and a coffin\n"))
-      ;; Break the loop
-      ((eq? cmd 'quit)
-       (exit))
-      ;; Search for something
-      ((eq? cmd 'search)
-       (format #t "Searching for ~a...\n" (cadr tokens)))
-      ;; Error handling
-      (else
-       (format #t "Sorry, I can't quite understand what you mean.\n"))])
+;; This function will match a list of keywords against a list of tokens
+(define (list-of-lengths keylist tokens) (map
+                                          (lambda (x)
+                                            (let ((set (lset-intersection eq? tokens x)))
+                                              ;; apply some weighting to the result
+                                              (* (/ (length set) (length x)) (length set)))) keylist ))
 
-  (command))
-(command)
+;; This function will return the position of the largest integer in the list
+(define (index-of-largest-number list-of-numbers) (let ((n (car (sort list-of-numbers >))))
+                                                    (if (zero? n) #f
+                                                        (list-index (lambda (x) (eq? x n)) list-of-numbers))))
+
+
+
+;; assv is similar to assq but works according to eqv?
+(define (assv-ref assvlist id)
+  (cdr (assv id assvlist)))
+
+;; This wrapper function will take an id and a list of tokens
+(define (lookup id tokens)
+  (let* ((record (assv-ref decisiontable id))
+         (keylist (get-keywords id))
+         (index (index-of-largest-number (list-of-lengths keylist tokens)))) (if index
+                                                                                 (cadr (list-ref record index)) #f)))
+
+
+
+(define (recommend initial-id)
+  (let loop ((id initial-id))
+    (format #t "~a\n> " (get-response id))
+    (let* ((input (read-line))
+           (string-tokens (string-tokenize input))
+           (tokens (map string->symbol string-tokens)))
+      (let ((response (lookup id tokens)))
+        (cond ((eq? #f response)
+               (format #t(loop id))
+               ((eq? 'gory (format #t "huh? I didn’t understand that! ")
+                     response)
+                "Searching for gory horror films ....\n")
+               (exit))
+              ((eq? 'non-gory response)
+               (format #t "Searching for non-gory scarey films ....\n")
+               (exit))
+              ((eq? 'quit response)
+               (format #t "So Long, and Thank you master...\n")
+               (exit)) (else
+                        (loop response)))))))
+
+(recommend 1)
