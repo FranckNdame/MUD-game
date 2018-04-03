@@ -22,7 +22,6 @@
 
 ;;Converts lists to mutable string
 (define (slist->string l)
-  ;
   (string-join (map symbol->string l)))
 
 
@@ -31,11 +30,15 @@
   (let ((record (assq id decisiontable)))
     ;; HOF filter returns direction entries
     (let* ((result (filter (lambda (n) (number? (second n))) (cdr record)))
+           ;; Set n to the length of the result
            (n (length result)))
+      ;; If there is no result
       (cond ((= 0 n)
              (printf "You appear to have entered a room with no exits.\n"))
+            ;; If there is one result
             ((= 1 n)
              (printf "You can see an exit to the ~a.\n" (slist->string (caar result))))
+            ;If there is more than one result
             (else
              (let* ((losym (map (lambda (x) (car x)) result))
                     (lostr (map (lambda (x) (slist->string x)) losym)))
@@ -62,6 +65,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 
 ;; This function will match a list of keywords against a list of tokens
+;; outputs a list in the form: (0 0 0 2 0 0)
 (define (list-of-lengths keylist tokens) (map
                                           (lambda (x)
                                             (let ((set (lset-intersection eq? tokens x)))
@@ -88,25 +92,27 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 
 
-(define (recommend initial-id)
-  (let loop ((id initial-id))
-    (format #t "~a\n> " (get-response id))
+;; Game loop
+(define (startgame initial-id)
+  (let loop ((id initial-id) (description #t))
+    (if description
+        (printf "~a\n> " (get-response id))
+        (printf "> "))
     (let* ((input (read-line))
            (string-tokens (string-tokenize input))
            (tokens (map string->symbol string-tokens)))
       (let ((response (lookup id tokens)))
-        (cond ((eq? #f response)
-               (format #t(loop id))
-               ((eq? 'gory (format #t "huh? I didn’t understand that! ")
-                     response)
-                "Searching for gory horror films ....\n")
-               (exit))
-              ((eq? 'non-gory response)
-               (format #t "Searching for non-gory scarey films ....\n")
-               (exit))
-              ((eq? 'quit response)
-               (format #t "So Long, and Thank you master...\n")
-               (exit)) (else
-                        (loop response)))))))
+        (cond ((number? response)
+               (loop response #t))
+              ((eq? #f response)
+               (format #t "Sorry, I'm not sure I understand\n")
+               (loop id #f))
 
-;(recommend 1)
+              ((eq? response 'look)
+               (get-directions id)
+               (loop id #f))
+              ((eq? response 'quit)
+               (format #t "So Long Franck...\n")
+               (exit)))))))
+
+(startgame 1)
