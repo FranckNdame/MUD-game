@@ -20,6 +20,11 @@
                         (2 ((south) 1) ,@actions)
                         (3 ,@actions)))
 
+;;Converts lists to mutable string
+(define (slist->string l)
+  ;
+  (string-join (map symbol->string l)))
+
 
 #| assq is a derivative of assoc and looks for the first element of a pair in a list which
 is equal to a given atom according to 'eq?'. If such an argument exists, its pair is returned|#

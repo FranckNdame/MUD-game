@@ -1,6 +1,7 @@
-# version 0.1.4
+# version 0.1.5
 =======================
 
 Update:
 
-*  'descriptions' function was added within an association list which is a list of cons-pairs representing a table in which the car of each pair maps to its cdr.
+*	(list -> string) returns a new mutable string whose content is the list of characters.
+*  'string-join' appends the strings in the list of strings and inserts a space between each pair
