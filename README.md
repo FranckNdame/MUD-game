@@ -1,8 +1,6 @@
-# version 0.1.2
+# version 0.1.3
 =======================
 
 Update:
 
-*  The decisiontable has been updated making it a lot more clear. It includes quasiquotes and unquote-splicing.
-
-* New directions are; north, south and north west
+*  'reponses' function was removed to be replaced by descriptions in the next update.

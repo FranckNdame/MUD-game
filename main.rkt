@@ -5,21 +5,6 @@
 (require srfi/48)
 
 
-(define responses
-  '(
-    ;;Room 1
-    (1 "You are in a room, you see a bag, a coffin and a door")
-    (2 "You found a key. What do you do now?")
-    (3 "The coffin is empty and has trace of a giant fingerprint.")
-    ;;Corridor
-    (4 "You are in a corridor with two doors, one at your left and one at your right.")
-    ;; Room 2A
-    (5 "It's a trap! you fell off in dark hole.")
-    ;; Room 2B'
-    (6 "It's your lucky day! There is a weapon on the floor")
-    (7 "You are now equiped. Watch this space!")
-    ))
-
 ;; Actions including quasiquote and unquote-splicing
 (define look '(((directions) look) ((look) look) ((examine room) look)))
 (define quit '(((exit game) quit) ((quit game) quit) ((exit) quit) ((quit) quit)))
