@@ -4,6 +4,11 @@
 (require srfi/13)
 (require srfi/48)
 
+;; Association list: list of paired cons forming a table
+;; This maps the car of the list to its cdrb
+(define descriptions '((1 "You are in the lobby")
+                       (2 "You are in the hallway")
+                       (3 "You are in a swamp")))
 
 ;; Actions including quasiquote and unquote-splicing
 (define look '(((directions) look) ((look) look) ((examine room) look)))
@@ -25,7 +30,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 ;; Returns ONLY the second element of the pair as a string
 (define (get-response id)
-  (car(assq-ref responses id)))
+  (car(assq-ref descriptions id)))
 
 ;; Generates a keyword list based on the given id
 (define (get-keywords id)
