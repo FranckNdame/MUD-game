@@ -20,18 +20,15 @@
     (7 "You are now equiped. Watch this space!")
     ))
 
-;; Defining actions
+;; Actions including quasiquote and unquote-splicing
 (define look '(((directions) look) ((look) look) ((examine room) look)))
 (define quit '(((exit game) quit) ((quit game) quit) ((exit) quit) ((quit) quit)))
 (define actions `(,@look ,@quit))
 
-(define decisiontable
-  '((1 ((open search bag) 2) ((open search coffin) 3) ((open search door) 4) ((look around)1))
-  
-    (2 ((open search bag) 2) ((open search coffin) 3) ((open search door) 4) ((look around)1))
-    (3 ((open search bag) 2) ((open search coffin) 3) ((open search door) 4) ((look around)1))
-    (4 ((go left) 5) ((go right) 6))
-    (6 ((pick) 7))))
+;; Decisiontable including quasiquote and unquote-splicing
+(define decisiontable `((1 ((north) 2) ((north west) 3) ,@actions)
+                        (2 ((south) 1) ,@actions)
+                        (3 ,@actions)))
 
 
 #| assq is a derivative of assoc and looks for the first element of a pair in a list which
