@@ -7,6 +7,26 @@
 ;; Association list
 (define objects '((1 "a knife") (1 "a piece of paper")))
 
+;; Creating the object and inventory database
+(define objectdb (make-hash))
+(define inventorydb (make-hash))
+
+
+(define (add-object db id object)
+  (if (hash-has-key? db id)
+      (let ((record (hash-ref db id)))
+        (hash-set! db id (cons object record)))
+      (hash-set! db id (cons object empty))))
+
+;; Define a function to add objects into a database
+(define (add-objects db)
+  (for-each
+   (lambda (r)
+     (add-object db (first r) (second r))) objects))
+
+;; Load objects data into our defined object database
+(add-objects objectdb)
+
 ;; Association list: list of paired cons forming a table
 ;; This maps the car of the list to its cdr
 (define descriptions '((1 "You are in the lobby")
@@ -17,6 +37,7 @@
 (define look '(((directions) look) ((look) look) ((examine room) look)))
 (define quit '(((exit game) quit) ((quit game) quit) ((exit) quit) ((quit) quit)))
 (define pick '(((put) drop) ((pickup) pick) ((pick) pick)))
+(define put '(((put) drop) ((drop) drop) ((place) drop) ((remove) drop)))
 (define inventory '(((inventory) inventory) ((bag) inventory)))
 (define actions `(,@look ,@quit ,@pick ,@put ,@inventory))
 
