@@ -27,6 +27,16 @@
 ;; Load objects data into our defined object database
 (add-objects objectdb)
 
+;; Displaying objects
+(define (display-objects db id)
+  (when (hash-has-key? db id)
+    (let* ((record (hash-ref db id))
+           (output (string-join record " and ")))
+      (when (not (equal? output ""))
+        (if (eq? id 'bag)
+            (printf "You are currently carrying ~a.\n" output)
+            (printf "You can see ~a.\n" output))))))
+
 ;; Association list: list of paired cons forming a table
 ;; This maps the car of the list to its cdr
 (define descriptions '((1 "You are in the lobby")
