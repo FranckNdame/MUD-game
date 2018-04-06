@@ -4,8 +4,11 @@
 (require srfi/13)
 (require srfi/48)
 
+;; Association list
+(define objects '((1 "a knife") (1 "a piece of paper")))
+
 ;; Association list: list of paired cons forming a table
-;; This maps the car of the list to its cdrb
+;; This maps the car of the list to its cdr
 (define descriptions '((1 "You are in the lobby")
                        (2 "You are in the hallway")
                        (3 "You are in a swamp")))
@@ -13,7 +16,9 @@
 ;; Actions including quasiquote and unquote-splicing
 (define look '(((directions) look) ((look) look) ((examine room) look)))
 (define quit '(((exit game) quit) ((quit game) quit) ((exit) quit) ((quit) quit)))
-(define actions `(,@look ,@quit))
+(define pick '(((put) drop) ((pickup) pick) ((pick) pick)))
+(define inventory '(((inventory) inventory) ((bag) inventory)))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory))
 
 ;; Decisiontable including quasiquote and unquote-splicing
 (define decisiontable `((1 ((north) 2) ((north west) 3) ,@actions)

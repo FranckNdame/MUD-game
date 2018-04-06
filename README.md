@@ -1,10 +1,14 @@
-# version 0.1.7
+# version 0.1.8
 =======================
 
 Update:
 
-*	A few comments have been added to the program.
+*	The ability to pick, store and drop objects was introduced to the program. The following functions were added;
 
-*	The 'recommend' function has been enchanced and replaced by 'startgame':
-	- It is now possible to dictate whether or not the room descriptions will be displayed.
+	- objects
+	- pick
+	- inventory
+
+* Hash tables are going to be introduced in the next update.
+
 
