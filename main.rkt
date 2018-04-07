@@ -7,6 +7,7 @@
 
 #|===================================================== DATA =================================================|#
 ;; Association list
+;; Describes the objects
 (define objects '((1 "a key")
                   (2 "a piece of paper")
                   (3 "a potion flask")
@@ -14,7 +15,7 @@
 
 
 ;; Association list: list of paired cons forming a table
-;; This maps the car of the list to its cdr
+;; This describes the room
 (define descriptions '((1 "You are in the prison cell. The guard appears to be asleep.")
                        (2 "You are in the hall \nBoy: James.... I have been waiting for so long. Don't ask any question and take what is in my pocket.")
                        (3 "You are in an ancient church.")
@@ -22,17 +23,19 @@
                        (5 "You are in a mystic room.")))
 
 
-;; Actions including quasiquote and unquote-splicing
+;; Actions 
 (define look '(((directions) look) ((look) look) ((examine room) look)))
 (define quit '(((exit game) quit) ((quit game) quit) ((exit) quit) ((quit) quit)))
 (define pick '(((put) drop) ((pickup) pick) ((pick) pick)))
 (define put '(((put) drop) ((drop) drop) ((place) drop) ((remove) drop)))
 (define inventory '(((inventory) inventory) ((bag) inventory)))
 (define help '(((help) help) ((instructions) help)))
+
+;; List of pairs constructed with quasiquote and unquote-splicing
 (define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help))
 
 
-;; Decisiontable including quasiquote and unquote-splicing
+;; Decisiontable constructed with quasiquote and unquote-splicing
 (define decisiontable `((1 ((a little boy standing at the end of the hall) 2) ,@actions)
                         (2 ((an entrance to a hall) 1) ((a half open door) 3) ((a tunnel) 4) ,@actions)
                         (3 ((a front door) 4) ((a back door) 2) ,@actions)
@@ -65,15 +68,15 @@
      (add-object db (first r) (second r))) objects))
 
 
-;; Displaying objects
+;; Displaying objects in the room and inventory
 (define (display-objects db id)
-  ;; When key(id) has something stored in db, proceed
+  ;; When the id has something stored in db, proceed
   (when (hash-has-key? db id)
-    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room or bag)
+    ;; This assigns to record the content of the key id inside the db hash table
     (let* ((record (hash-ref db id))
-           ;; Formats the output(list of items in the room)
+           ;; This will format the output
            (output (string-join record " and ")))
-      ;; Shows items in inventory or in the ground. Adds treatment to cases where the room or the inventory are empty
+      ;; Shows items in inventory or in the ground.
       (cond
         ((and (equal? output "") (eq? id 'bag)) (printf "Your inventory is empty.\n"))
         ((and (equal? output "") (number? id)) (printf "The room is empty.\n"))
@@ -97,10 +100,9 @@
              (printf "Added ~a to your bag.\n" (first item))
              ;; Adds item to inventorydb
              (add-object inventorydb 'bag (first item))
-             ;; Checks if the item interacted with is the interdimensional communicator. If it is, the game is over
+             ;; Checks if the user interacted with is the teleporter
              (if (eq? (first item) "a teleporter")
                  (begin
-                   ;; Shows message and exits game
                    (printf "This is all for the moment. Watch this space.\n")
                    )
                  ;; Removes item from the ground  
@@ -126,11 +128,12 @@
     (remove-object-from-inventory inventorydb id item)))            
 
 
-;; Calling the functions to the main loop
+;; Picking objects
 (define (pick-item id input)
   (let ((item (string-join (cdr (string-split input)))))
     (remove-object-from-room objectdb id item)))
 
+;; Display bag
 (define (display-inventory)
   (display-objects inventorydb 'bag))
 
@@ -168,9 +171,10 @@ Welcome to Logic Invation MUD.\n
 ;; iii)   Location
 ;;------------------------------------------------------------------------------------------------------------------
 
+;; This helps in obtaining the user's location through a unique id
 (define (get-location id)
   (printf "~a\n" (car (assq-ref descriptions id)))
-  ;; Describe objects that are present in the room
+  ;; This describe the objects present in the room
   (display-objects objectdb id)
   (printf "> "))
 
