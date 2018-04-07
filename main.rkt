@@ -8,7 +8,7 @@
 (define objects '((1 "a key")
                   (2 "a piece of paper")
                   (3 "a potion flask")
-                  (5 "a dragon. Watch this space.....")))
+                  (5 "a teleporter")))
 ;; Creating the object database
 (define objectdb (make-hash))
 ;; Creating the inventory database
@@ -45,16 +45,30 @@
 
 ;; Removing objects from the room
 (define (remove-object-from-room db id str)
+  ;; When key(id) has something stored in db, proceed
   (when (hash-has-key? db id)
+    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room)
     (let* ((record (hash-ref db id))
-           (result (remove (lambda (x) (string-suffix-ci? str x)) record))
-           (item (lset-difference equal? record result)))
+            ;; Remove the occurrence of the item(based on the sufix, which is the most probable user input e.g. dagger) from the room
+            (result (remove (lambda (x) (string-suffix-ci? str x)) record))
+            ;; Return the items that record have and result don't
+            (item (lset-difference equal? record result)))
       (cond ((null? item)
+             ;; If item is null(item is not in the room), reports error
              (printf "I don't see that item in the room!\n"))
             (else
-             (printf "Added ~a to your bag.\n" (first item))
-             (add-object inventorydb 'bag (first item))
-             (hash-set! db id result))))))
+              (printf "Added ~a to your bag.\n" (first item))
+              ;; Adds item to inventorydb
+              (add-object inventorydb 'bag (first item))
+              ;; Checks if the item interacted with is the interdimensional communicator. If it is, the game is over
+              (if (eq? (first item) "a teleporter")
+                (begin
+                  ;; Shows message and exits game
+                  (printf "This is all for the moment. Watch this space.\n")
+                  )
+                ;; Removes item from the ground  
+                (hash-set! db id result))
+              (exit))))))
 
 ;; Removing objects from the inventory
 (define (remove-object-from-inventory db id str)
@@ -269,7 +283,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
               ;; Exit game command
               ((eq? response 'quit)
                ;; Exit the application
-               (format #t "Hasta la vista, baby!\n")
+               (format #t "So long Franck....")
                (exit)))))))
 
 ;; Adds the objects to the database before the game starts
