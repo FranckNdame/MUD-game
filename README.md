@@ -1,8 +1,12 @@
-# version 0.1.11
+# version 0.2.0
 =======================
 
 Update:
 
-*	I am now able to remove objects from the room and the bag.
+*	The 'display-objects' function has been enhanced and can now handle cases where the room is empty.
 
-*	Note that, removing an object from a room will add the object to the bag and vice versa.
+* Items can now be dropped.
+
+* The 'get-directions' function now automatically describes the objects present in the room.
+
+* The game loop has been updated with our created functions

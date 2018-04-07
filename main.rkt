@@ -5,10 +5,11 @@
 (require srfi/48)
 
 ;; Association list
-(define objects '((1 "a knife") (1 "a piece of paper")))
+(define objects '((1 "a fork") (2 "a piece of paper")))
 
-;; Creating the object and inventory database
+;; Creating the object database
 (define objectdb (make-hash))
+;; Creating the inventory database
 (define inventorydb (make-hash))
 
 
@@ -24,18 +25,21 @@
    (lambda (r)
      (add-object db (first r) (second r))) objects))
 
-;; Load objects data into our defined object database
-(add-objects objectdb)
 
 ;; Displaying objects
 (define (display-objects db id)
+  ;; When key(id) has something stored in db, proceed
   (when (hash-has-key? db id)
+    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room or bag)
     (let* ((record (hash-ref db id))
-           (output (string-join record " and ")))
-      (when (not (equal? output ""))
-        (if (eq? id 'bag)
-            (printf "You are currently carrying ~a.\n" output)
-            (printf "You can see ~a.\n" output))))))
+            ;; Formats the output(list of items in the room)
+            (output (string-join record " and ")))
+      ;; Shows items in inventory or in the ground. Adds treatment to cases where the room or the inventory are empty
+      (cond
+        ((and (equal? output "") (eq? id 'bag)) (printf "Your inventory is empty.\n"))
+        ((and (equal? output "") (number? id)) (printf "The room is empty.\n"))
+        ((and (not (equal? output "")) (eq? id 'bag)) (printf "You are carrying ~a.\n" output))
+        (else (printf "You see ~a.\n" output))))))
 
 ;; Removing objects from the room
 (define (remove-object-from-room db id str)
@@ -63,13 +67,29 @@
              (add-object objectdb id (first item))
              (hash-set! db 'bag result))))))
 
+;; Calling the functions to the main loop
+(define (pick-item id input)
+  (let ((item (string-join (cdr (string-split input)))))
+    (remove-object-from-room objectdb id item)))
 
+;; Dropping items
+(define (put-item id input)
+  (let ((item (string-join (cdr (string-split input)))))
+    (remove-object-from-inventory inventorydb id item)))
+
+(define (display-inventory)
+  (display-objects inventorydb 'bag))
+
+
+;; Association list: list of paired cons forming a table
+;; This maps the car of the list to its cdr
 
 ;; Association list: list of paired cons forming a table
 ;; This maps the car of the list to its cdr
 (define descriptions '((1 "You are in the lobby")
                        (2 "You are in the hallway")
                        (3 "You are in a swamp")))
+
 
 ;; Actions including quasiquote and unquote-splicing
 (define look '(((directions) look) ((look) look) ((examine room) look)))
@@ -84,28 +104,42 @@
                         (2 ((south) 1) ,@actions)
                         (3 ,@actions)))
 
+;;============================= DEFINING THE FUNCTIONS =================================
+
+
 ;;Converts lists to mutable string
 (define (slist->string l)
   (string-join (map symbol->string l)))
 
+(define (get-location id)
+  (printf "~a\n" (car (assq-ref descriptions id)))
+  ;; Describe objects that are present in the room
+  (display-objects objectdb id)
+  (printf "> "))
+
+
 
 ;; Obtaining room directions
 (define (get-directions id)
-  (let ((record (assq id decisiontable)))
+  ;; Describe objects that are present in the room
+  (display-objects objectdb id)
     ;; HOF filter returns direction entries
+  (let ((record (assq id decisiontable)))
     (let* ((result (filter (lambda (n) (number? (second n))) (cdr record)))
-           ;; Set n to the length of the result
            (n (length result)))
       ;; If there is no result
       (cond ((= 0 n)
+            ;If there is more than one result
              (printf "You appear to have entered a room with no exits.\n"))
-            ;; If there is one result
             ((= 1 n)
+             ;; Extract the directions from result using our slist->string function
              (printf "You can see an exit to the ~a.\n" (slist->string (caar result))))
             ;If there is more than one result
             (else
+             ;; losym in let* will remove the numbers from the directions. The second one transforms the list in a lat with the directions.
              (let* ((losym (map (lambda (x) (car x)) result))
                     (lostr (map (lambda (x) (slist->string x)) losym)))
+               ;; This will take the atoms from lostr and transform them into a string separated by " and "
                (printf "You can see exits to the ~a.\n" (string-join lostr " and "))))))))
 
 
@@ -117,8 +151,8 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
   (cdr (assq id assqlist)))
 
 ;; Returns ONLY the second element of the pair as a string
-(define (get-response id)
-  (car(assq-ref descriptions id)))
+;(define (get-response id)
+ ; (car(assq-ref descriptions id)))
 
 ;; Generates a keyword list based on the given id
 (define (get-keywords id)
@@ -157,26 +191,61 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 
 ;; Game loop
+
 (define (startgame initial-id)
   (let loop ((id initial-id) (description #t))
     (if description
-        (printf "~a\n> " (get-response id))
+        ;; If there is an available description, shows it on the screen
+        (get-location id)
+        ;; Else statement. Don't show location(because there isn't any description). Just shows the greater than symbol to incite user to type in text field
         (printf "> "))
+    ;; Read input from the keyboard
     (let* ((input (read-line))
+           ;; Function contained in the srfi/13 library, tokenize the input into substrings where a space character is found
            (string-tokens (string-tokenize input))
+           ;; Creates a list of symbols(not strings) with the input. This is needed to compare the entry with our predefined lists
            (tokens (map string->symbol string-tokens)))
+      ;; Decides which action response corresponds to. One of the most important calls in the code 
       (let ((response (lookup id tokens)))
+        ;; (printf "Input: ~a\nTokens: ~a\nResponse: ~a\n" input tokens response)
         (cond ((number? response)
                (loop response #t))
+              ;; If response meaning couldn't be found after the lookup function, shows error message
               ((eq? #f response)
-               (format #t "Sorry, I'm not sure I understand\n")
+               (format #t "Huh? I didn't understand that!\n")
                (loop id #f))
-
+              ;; Response action is look at around the room for directions
               ((eq? response 'look)
+               ;; Retrieve possible directions
                (get-directions id)
                (loop id #f))
+              ;; Response action is to pick an item
+              ((eq? response 'pick)
+               ;; Pick up item
+               (pick-item id input)
+               (loop id #f))
+              ;; Response action is to drop an item
+              ((eq? response 'put)
+               ;; Drop item
+               (put-item id input)
+               (loop id #f))
+              ;; Response action is to show inventory
+              ((eq? response 'inventory)
+               ;; Displays the inventory
+               (display-inventory)
+               (loop id #f))
+              ;; Response action is to display the help file
+              ;((eq? response 'help)
+                ;; Displays Help text on the screen
+                ;(display-help)
+               ; (loop id #f))
+              ;; Exit game command
               ((eq? response 'quit)
-               (format #t "So Long Franck...\n")
+               ;; Exit the application
+               (format #t "Hasta la vista, baby!\n")
                (exit)))))))
+
+;; Adds the objects to the database before the game starts
+(add-objects objectdb)
 
 (startgame 1)
