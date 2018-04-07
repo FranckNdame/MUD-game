@@ -1,6 +1,6 @@
-# version 0.2.1
+# version 0.2.2
 =======================
 
 Update:
 
-*	Data has been added to the 'objects', 'descriptions' and 'decisiontable' functions
+*	A help function has been added to the game. This function will simply guide users.

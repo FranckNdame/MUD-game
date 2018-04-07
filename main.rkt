@@ -101,7 +101,9 @@
 (define pick '(((put) drop) ((pickup) pick) ((pick) pick)))
 (define put '(((put) drop) ((drop) drop) ((place) drop) ((remove) drop)))
 (define inventory '(((inventory) inventory) ((bag) inventory)))
-(define actions `(,@look ,@quit ,@pick ,@put ,@inventory))
+(define help '(((help) help) ((instructions) help)))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help))
+
 
 ;; Decisiontable including quasiquote and unquote-splicing
 (define decisiontable `((1 ((a little boy standing at the end of the hall) 2) ,@actions)
@@ -111,6 +113,26 @@
                         (5 ((south west) 3) ,@actions)))
 ;;============================= DEFINING THE FUNCTIONS =================================
 
+(define (display-help)
+  (printf "\nINSTRUCTIONS
+=================
+Welcome to Logic Invation MUD.\n
+
+* GAME OBJECTIVE
+  ===============
+  The game objective is to activate the nether portal to escape the maze. 
+  To be able to open the portal, you must find the Interdimensional Communicator
+  in one of the maze rooms.\n\n
+
+* VALID COMMANDS
+ ================
+          - Enter look, directions or examine room): Get information about the current room.
+          - Enter pick, get or pickup [item-name] : Pick the item.
+          - Enter drop, put, place or remove [item-name] : Drop the item in your bag on the ground.
+          - Enter inventory or bag : Display a list of available items in the bag.
+          - Enter help or instructions : Display instructions.
+          - Enter quit, exit, quit game or exit game) : Quit the application.\n
+          "))
 
 ;;Converts lists to mutable string
 (define (slist->string l)
@@ -240,10 +262,10 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
                (display-inventory)
                (loop id #f))
               ;; Response action is to display the help file
-              ;((eq? response 'help)
+              ((eq? response 'help)
                 ;; Displays Help text on the screen
-                ;(display-help)
-               ; (loop id #f))
+                (display-help)
+                (loop id #f))
               ;; Exit game command
               ((eq? response 'quit)
                ;; Exit the application
