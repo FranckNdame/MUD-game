@@ -4,101 +4,14 @@
 (require srfi/13)
 (require srfi/48)
 
+
+#|===================================================== DATA =================================================|#
 ;; Association list
 (define objects '((1 "a key")
                   (2 "a piece of paper")
                   (3 "a potion flask")
                   (5 "a teleporter")))
-;; Creating the object database
-(define objectdb (make-hash))
-;; Creating the inventory database
-(define inventorydb (make-hash))
 
-
-(define (add-object db id object)
-  (if (hash-has-key? db id)
-      (let ((record (hash-ref db id)))
-        (hash-set! db id (cons object record)))
-      (hash-set! db id (cons object empty))))
-
-;; Define a function to add objects into a database
-(define (add-objects db)
-  (for-each
-   (lambda (r)
-     (add-object db (first r) (second r))) objects))
-
-
-;; Displaying objects
-(define (display-objects db id)
-  ;; When key(id) has something stored in db, proceed
-  (when (hash-has-key? db id)
-    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room or bag)
-    (let* ((record (hash-ref db id))
-            ;; Formats the output(list of items in the room)
-            (output (string-join record " and ")))
-      ;; Shows items in inventory or in the ground. Adds treatment to cases where the room or the inventory are empty
-      (cond
-        ((and (equal? output "") (eq? id 'bag)) (printf "Your inventory is empty.\n"))
-        ((and (equal? output "") (number? id)) (printf "The room is empty.\n"))
-        ((and (not (equal? output "")) (eq? id 'bag)) (printf "You are carrying ~a.\n" output))
-        (else (printf "You see ~a.\n" output))))))
-
-;; Removing objects from the room
-(define (remove-object-from-room db id str)
-  ;; When key(id) has something stored in db, proceed
-  (when (hash-has-key? db id)
-    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room)
-    (let* ((record (hash-ref db id))
-            ;; Remove the occurrence of the item(based on the sufix, which is the most probable user input e.g. dagger) from the room
-            (result (remove (lambda (x) (string-suffix-ci? str x)) record))
-            ;; Return the items that record have and result don't
-            (item (lset-difference equal? record result)))
-      (cond ((null? item)
-             ;; If item is null(item is not in the room), reports error
-             (printf "I don't see that item in the room!\n"))
-            (else
-              (printf "Added ~a to your bag.\n" (first item))
-              ;; Adds item to inventorydb
-              (add-object inventorydb 'bag (first item))
-              ;; Checks if the item interacted with is the interdimensional communicator. If it is, the game is over
-              (if (eq? (first item) "a teleporter")
-                (begin
-                  ;; Shows message and exits game
-                  (printf "This is all for the moment. Watch this space.\n")
-                  )
-                ;; Removes item from the ground  
-                (hash-set! db id result))
-              (exit))))))
-
-;; Removing objects from the inventory
-(define (remove-object-from-inventory db id str)
-  (when (hash-has-key? db 'bag)
-    (let* ((record (hash-ref db 'bag))
-           (result (remove (lambda (x) (string-suffix-ci? str x)) record))
-           (item (lset-difference equal? record result)))
-      (cond ((null? item)
-             (printf "You are not carrying that item!\n"))
-            (else
-             (printf "Removed ~a from your bag.\n" (first item))
-             (add-object objectdb id (first item))
-             (hash-set! db 'bag result))))))
-
-;; Calling the functions to the main loop
-(define (pick-item id input)
-  (let ((item (string-join (cdr (string-split input)))))
-    (remove-object-from-room objectdb id item)))
-
-;; Dropping items
-(define (put-item id input)
-  (let ((item (string-join (cdr (string-split input)))))
-    (remove-object-from-inventory inventorydb id item)))
-
-(define (display-inventory)
-  (display-objects inventorydb 'bag))
-
-
-;; Association list: list of paired cons forming a table
-;; This maps the car of the list to its cdr
 
 ;; Association list: list of paired cons forming a table
 ;; This maps the car of the list to its cdr
@@ -125,7 +38,108 @@
                         (3 ((a front door) 4) ((a back door) 2) ,@actions)
                         (4 ((a door with a *DO NOT ENTER!* sign) 5) (( an entrance to the east) 3) ,@actions)
                         (5 ((south west) 3) ,@actions)))
-;;============================= DEFINING THE FUNCTIONS =================================
+
+
+#|============================================================================================================|#
+
+#|===================================================== FUNCTIONS =================================================|#
+
+;; i)   Objects
+;;------------------------------------------------------------------------------------------------------------------
+
+;; Creating the object database
+(define objectdb (make-hash))
+;; Creating the inventory database
+(define inventorydb (make-hash))
+
+(define (add-object db id object)
+  (if (hash-has-key? db id)
+      (let ((record (hash-ref db id)))
+        (hash-set! db id (cons object record)))
+      (hash-set! db id (cons object empty))))
+
+;; Define a function to add objects into a database
+(define (add-objects db)
+  (for-each
+   (lambda (r)
+     (add-object db (first r) (second r))) objects))
+
+
+;; Displaying objects
+(define (display-objects db id)
+  ;; When key(id) has something stored in db, proceed
+  (when (hash-has-key? db id)
+    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room or bag)
+    (let* ((record (hash-ref db id))
+           ;; Formats the output(list of items in the room)
+           (output (string-join record " and ")))
+      ;; Shows items in inventory or in the ground. Adds treatment to cases where the room or the inventory are empty
+      (cond
+        ((and (equal? output "") (eq? id 'bag)) (printf "Your inventory is empty.\n"))
+        ((and (equal? output "") (number? id)) (printf "The room is empty.\n"))
+        ((and (not (equal? output "")) (eq? id 'bag)) (printf "You are carrying ~a.\n" output))
+        (else (printf "You see ~a.\n" output))))))
+
+;; Removing objects from the room
+(define (remove-object-from-room db id str)
+  ;; When key(id) has something stored in db, proceed
+  (when (hash-has-key? db id)
+    ;; Assigns to record the content of the key id inside the db hash table(gets previous items assigned to a room)
+    (let* ((record (hash-ref db id))
+           ;; Remove the occurrence of the item(based on the sufix, which is the most probable user input e.g. dagger) from the room
+           (result (remove (lambda (x) (string-suffix-ci? str x)) record))
+           ;; Return the items that record have and result don't
+           (item (lset-difference equal? record result)))
+      (cond ((null? item)
+             ;; If item is null(item is not in the room), reports error
+             (printf "I don't see that item in the room!\n"))
+            (else
+             (printf "Added ~a to your bag.\n" (first item))
+             ;; Adds item to inventorydb
+             (add-object inventorydb 'bag (first item))
+             ;; Checks if the item interacted with is the interdimensional communicator. If it is, the game is over
+             (if (eq? (first item) "a teleporter")
+                 (begin
+                   ;; Shows message and exits game
+                   (printf "This is all for the moment. Watch this space.\n")
+                   )
+                 ;; Removes item from the ground  
+                 (hash-set! db id result))
+             (exit))))))
+
+;; Removing objects from the inventory
+(define (remove-object-from-inventory db id str)
+  (when (hash-has-key? db 'bag)
+    (let* ((record (hash-ref db 'bag))
+           (result (remove (lambda (x) (string-suffix-ci? str x)) record))
+           (item (lset-difference equal? record result)))
+      (cond ((null? item)
+             (printf "You are not carrying that item!\n"))
+            (else
+             (printf "Removed ~a from your bag.\n" (first item))
+             (add-object objectdb id (first item))
+             (hash-set! db 'bag result))))))
+
+;; Dropping objects
+(define (put-item id input)
+  (let ((item (string-join (cdr (string-split input)))))
+    (remove-object-from-inventory inventorydb id item)))            
+
+
+;; Calling the functions to the main loop
+(define (pick-item id input)
+  (let ((item (string-join (cdr (string-split input)))))
+    (remove-object-from-room objectdb id item)))
+
+(define (display-inventory)
+  (display-objects inventorydb 'bag))
+
+
+;;------------------------------------------------------------------------------------------------------------------
+
+
+;; ii)   Instructions
+;;------------------------------------------------------------------------------------------------------------------
 
 (define (display-help)
   (printf "\nINSTRUCTIONS
@@ -148,9 +162,11 @@ Welcome to Logic Invation MUD.\n
           - Enter quit, exit, quit game or exit game) : Quit the application.\n
           "))
 
-;;Converts lists to mutable string
-(define (slist->string l)
-  (string-join (map symbol->string l)))
+;;------------------------------------------------------------------------------------------------------------------
+
+
+;; iii)   Location
+;;------------------------------------------------------------------------------------------------------------------
 
 (define (get-location id)
   (printf "~a\n" (car (assq-ref descriptions id)))
@@ -164,13 +180,13 @@ Welcome to Logic Invation MUD.\n
 (define (get-directions id)
   ;; Describe objects that are present in the room
   (display-objects objectdb id)
-    ;; HOF filter returns direction entries
+  ;; HOF filter returns direction entries
   (let ((record (assq id decisiontable)))
     (let* ((result (filter (lambda (n) (number? (second n))) (cdr record)))
            (n (length result)))
       ;; If there is no result
       (cond ((= 0 n)
-            ;If there is more than one result
+             ;If there is more than one result
              (printf "You appear to have entered a room with no exits.\n"))
             ((= 1 n)
              ;; Extract the directions from result using our slist->string function
@@ -183,6 +199,14 @@ Welcome to Logic Invation MUD.\n
                ;; This will take the atoms from lostr and transform them into a string separated by " and "
                (printf "You can see ~a.\n" (string-join lostr " and "))))))))
 
+;;------------------------------------------------------------------------------------------------------------------
+
+;; iv)   Input
+;;------------------------------------------------------------------------------------------------------------------
+
+;;Converts lists to mutable string
+(define (slist->string l)
+  (string-join (map symbol->string l)))
 
 #| assq is a derivative of assoc and looks for the first element of a pair in a list which
 is equal to a given atom according to 'eq?'. If such an argument exists, its pair is returned|#
@@ -193,7 +217,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 ;; Returns ONLY the second element of the pair as a string
 ;(define (get-response id)
- ; (car(assq-ref descriptions id)))
+; (car(assq-ref descriptions id)))
 
 ;; Generates a keyword list based on the given id
 (define (get-keywords id)
@@ -229,9 +253,14 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
          (index (index-of-largest-number (list-of-lengths keylist tokens)))) (if index
                                                                                  (cadr (list-ref record index)) #f)))
 
+;;------------------------------------------------------------------------------------------------------------------
+
+#|=================================================================================================================|#
 
 
-;; Game loop
+
+
+#|===================================================== GAME LOOP =================================================|#
 
 (define (startgame initial-id)
   (let loop ((id initial-id) (description #t))
@@ -277,14 +306,16 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
                (loop id #f))
               ;; Response action is to display the help file
               ((eq? response 'help)
-                ;; Displays Help text on the screen
-                (display-help)
-                (loop id #f))
+               ;; Displays Help text on the screen
+               (display-help)
+               (loop id #f))
               ;; Exit game command
               ((eq? response 'quit)
                ;; Exit the application
                (format #t "So long Franck....")
                (exit)))))))
+               
+#|=================================================================================================================|#
 
 ;; Adds the objects to the database before the game starts
 (add-objects objectdb)

@@ -1,6 +1,6 @@
-# version 0.2.3
+# version 0.2.4
 =======================
 
 Update:
 
-*	A way out of the game look was added
+*	The program was organised and indented.
