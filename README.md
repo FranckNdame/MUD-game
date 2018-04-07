@@ -3,4 +3,4 @@
 
 Update:
 
-*	A way out of the game look was added
+*	A way out of the game loop was added
