@@ -5,8 +5,10 @@
 (require srfi/48)
 
 ;; Association list
-(define objects '((1 "a fork") (2 "a piece of paper")))
-
+(define objects '((1 "a key")
+                  (2 "a piece of paper")
+                  (3 "a potion flask")
+                  (5 "a dragon. Watch this space.....")))
 ;; Creating the object database
 (define objectdb (make-hash))
 ;; Creating the inventory database
@@ -86,9 +88,11 @@
 
 ;; Association list: list of paired cons forming a table
 ;; This maps the car of the list to its cdr
-(define descriptions '((1 "You are in the lobby")
-                       (2 "You are in the hallway")
-                       (3 "You are in a swamp")))
+(define descriptions '((1 "You are in the prison cell. The guard appears to be asleep.")
+                       (2 "You are in the hall \nBoy: James.... I have been waiting for so long. Don't ask any question and take what is in my pocket.")
+                       (3 "You are in an ancient church.")
+                       (4 "You are in a graveyard.")
+                       (5 "You are in a mystic room.")))
 
 
 ;; Actions including quasiquote and unquote-splicing
@@ -100,10 +104,11 @@
 (define actions `(,@look ,@quit ,@pick ,@put ,@inventory))
 
 ;; Decisiontable including quasiquote and unquote-splicing
-(define decisiontable `((1 ((north) 2) ((north west) 3) ,@actions)
-                        (2 ((south) 1) ,@actions)
-                        (3 ,@actions)))
-
+(define decisiontable `((1 ((a little boy standing at the end of the hall) 2) ,@actions)
+                        (2 ((an entrance to a hall) 1) ((a half open door) 3) ((a tunnel) 4) ,@actions)
+                        (3 ((a front door) 4) ((a back door) 2) ,@actions)
+                        (4 ((a door with a *DO NOT ENTER!* sign) 5) (( an entrance to the east) 3) ,@actions)
+                        (5 ((south west) 3) ,@actions)))
 ;;============================= DEFINING THE FUNCTIONS =================================
 
 
@@ -133,14 +138,14 @@
              (printf "You appear to have entered a room with no exits.\n"))
             ((= 1 n)
              ;; Extract the directions from result using our slist->string function
-             (printf "You can see an exit to the ~a.\n" (slist->string (caar result))))
+             (printf "You can see ~a.\n" (slist->string (caar result))))
             ;If there is more than one result
             (else
              ;; losym in let* will remove the numbers from the directions. The second one transforms the list in a lat with the directions.
              (let* ((losym (map (lambda (x) (car x)) result))
                     (lostr (map (lambda (x) (slist->string x)) losym)))
                ;; This will take the atoms from lostr and transform them into a string separated by " and "
-               (printf "You can see exits to the ~a.\n" (string-join lostr " and "))))))))
+               (printf "You can see ~a.\n" (string-join lostr " and "))))))))
 
 
 #| assq is a derivative of assoc and looks for the first element of a pair in a list which
