@@ -1,8 +1,8 @@
-# version 0.2.5
+# version 0.2.6
 =======================
 
 Update:
 
 
-*	A few comments were added.
+*	More content was added
 

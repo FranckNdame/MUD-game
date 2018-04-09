@@ -3,24 +3,36 @@
 (require srfi/1)
 (require srfi/13)
 (require srfi/48)
+;(require racket/gui)
 
+(define width 40)
+(define height 40)
+(define done 16)
+(define message "Welcome To the Dungeon | Please enter a command: ")
+(define screen_width (* width done))
+(define screen_height (* height done))
 
 #|===================================================== DATA =================================================|#
 ;; Association list
 ;; Describes the objects
-(define objects '((1 "a key")
-                  (2 "a piece of paper")
-                  (3 "a potion flask")
+(define objects '(
+                  (2 "a key")
+                  (3 "a piece of paper")
                   (5 "a teleporter")))
 
 
 ;; Association list: list of paired cons forming a table
 ;; This describes the room
-(define descriptions '((1 "You are in the prison cell. The guard appears to be asleep.")
-                       (2 "You are in the hall \nBoy: James.... I have been waiting for so long. Don't ask any question and take what is in my pocket.")
-                       (3 "You are in an ancient church.")
-                       (4 "You are in a graveyard.")
-                       (5 "You are in a mystic room.")))
+(define descriptions '((1 "What..... \nWhat is happening?... \nWhere am I?.....\nI should probably 'look' around.")
+                       ;; Prison Cell
+                       (2 "OH!... \nI am in the prison cell! \nHow did I get here?....\nI need to get out! \nThis guard appears to be asleep.\n")
+                       (3 ">>> You are in the hall <<<
+                         \nBoy: James.... I have been waiting for so long. Don't ask any question and take what is in my pocket.\n")
+                       (4 ">>> You are in an ancient church where a woman approaches you<<< \nWoman: Well well hello Mr James..\nYou probably wonder who I am right? ")
+                       ;; If the user answers YES
+                       (5 "Woman: Your curiosity does not surprise me.\nJane: I am Jane and I am the reason you are here...")
+                       ;; ELSE
+                       (6 "How rude! I knew I shouldn't have left you alive.\n>>The woman pushes you in a sea of sharks<<\n GAME OVER!")))
 
 
 ;; Actions 
@@ -36,11 +48,12 @@
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing
-(define decisiontable `((1 ((a little boy standing at the end of the hall) 2) ,@actions)
-                        (2 ((an entrance to a hall) 1) ((a half open door) 3) ((a tunnel) 4) ,@actions)
+(define decisiontable `((1 ((a beam of light at the end of the room) 2) ,@actions)
+                        (2 ((an entrance to a hall) 3) ((a tunnel) 4) ,@actions)
                         (3 ((a front door) 4) ((a back door) 2) ,@actions)
-                        (4 ((a door with a *DO NOT ENTER!* sign) 5) (( an entrance to the east) 3) ,@actions)
-                        (5 ((south west) 3) ,@actions)))
+                        (4 ((yes) 5) ((no) 6) ((I don't care) 6))
+                        (5 ((south west) 3) ,@actions)
+                        (6 ((south west) 3) ,@quit)))
 
 
 #|============================================================================================================|#
@@ -81,7 +94,7 @@
         ((and (equal? output "") (eq? id 'bag)) (printf "Your inventory is empty.\n"))
         ((and (equal? output "") (number? id)) (printf "The room is empty.\n"))
         ((and (not (equal? output "")) (eq? id 'bag)) (printf "You are carrying ~a.\n" output))
-        (else (printf "You see ~a.\n" output))))))
+        (else (printf ">>> You see ~a <<<\n" output))))))
 
 ;; Removing objects from the room
 (define (remove-object-from-room db id str)
@@ -107,7 +120,7 @@
                    )
                  ;; Removes item from the ground  
                  (hash-set! db id result))
-             (exit))))))
+             )))))
 
 ;; Removing objects from the inventory
 (define (remove-object-from-inventory db id str)
@@ -194,14 +207,14 @@ Welcome to Logic Invation MUD.\n
              (printf "You appear to have entered a room with no exits.\n"))
             ((= 1 n)
              ;; Extract the directions from result using our slist->string function
-             (printf "You can see ~a.\n" (slist->string (caar result))))
+             (printf ">>>> You can see ~a <<<<\n" (slist->string (caar result))))
             ;If there is more than one result
             (else
              ;; losym in let* will remove the numbers from the directions. The second one transforms the list in a lat with the directions.
              (let* ((losym (map (lambda (x) (car x)) result))
                     (lostr (map (lambda (x) (slist->string x)) losym)))
                ;; This will take the atoms from lostr and transform them into a string separated by " and "
-               (printf "You can see ~a.\n" (string-join lostr " and "))))))))
+               (printf ">>>>> You can see ~a <<<<<\n" (string-join lostr " and "))))))))
 
 ;;------------------------------------------------------------------------------------------------------------------
 
