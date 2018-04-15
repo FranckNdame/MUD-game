@@ -1,9 +1,12 @@
 #lang racket
 ;; Dependencies
+(require (prefix-in picy: racket/gui))
+(require racket/draw)
 (require srfi/1)
 (require srfi/13)
 (require srfi/48)
-;(require racket/gui)
+(require rsound)
+(define stream (make-pstream))
 
 (define width 40)
 (define height 40)
