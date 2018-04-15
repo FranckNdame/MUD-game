@@ -1,9 +1,9 @@
-# version 0.3.2
+# version 0.3.3
 =======================
 
 Update:
 
 
-*	A frame was added and images were imported. 
+*	The 'images' folder was added to the repository. 
 
 
