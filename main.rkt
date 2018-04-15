@@ -8,12 +8,26 @@
 (require rsound)
 (define stream (make-pstream))
 
-(define width 40)
-(define height 40)
+(define width 50)
+(define height 33)
 (define done 16)
 (define message "Welcome To the Dungeon | Please enter a command: ")
 (define screen_width (* width done))
 (define screen_height (* height done))
+
+
+(define key (read-bitmap "images/key.png"))
+(define startscreen (read-bitmap "./images/startscreen.jpg"))
+(define room2 (read-bitmap "./images/guard.jpg"))
+(define beam (read-bitmap "./images/beam.jpg"))
+(define wake-up (read-bitmap "./images/wakeup.jpg"))
+(define guard (read-bitmap "./images/guard.jpg"))
+
+(define frame (new picy:frame%
+                   [label "LOGIC INVASION"]
+                   [width screen_width]
+                   [height screen_height])
+  )
 
 #|===================================================== DATA =================================================|#
 ;; Association list

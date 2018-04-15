@@ -1,7 +1,9 @@
-# version 0.3.1
+# version 0.3.2
 =======================
 
 Update:
 
 
-*	Some functions were enhanced. 
+*	A frame was added and images were imported. 
+
+
