@@ -242,6 +242,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 ;; Generates a keyword list based on the given id
 (define (get-keywords id)
   (let ((keys (assq-ref decisiontable id)))
+    ;; Returns ONLYS the accepted keywords(not their actions)
     (map (lambda (key) (car key)) keys)))
 
 
@@ -268,6 +269,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 ;; This wrapper function will take an id and a list of tokens
 (define (lookup id tokens)
+    ;; Assigns to record a list with the possible actions for the current room
   (let* ((record (assv-ref decisiontable id))
          (keylist (get-keywords id))
          (index (index-of-largest-number (list-of-lengths keylist tokens)))) (if index
