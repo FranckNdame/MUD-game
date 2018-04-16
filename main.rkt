@@ -9,8 +9,8 @@
 (define stream (make-pstream))
 
 
-(define menu-sound (rs-read "menu-sound3.wav"))
-(define miss-racket (rs-read "help-ai.wav"))
+(define menu-sound (rs-read "sounds/menu-sound3.wav"))
+(define miss-racket (rs-read "sounds/help-ai.wav"))
 
 (define width 50)
 (define height 33)
@@ -59,23 +59,25 @@
 ;; Association list
 ;; Describes the objects
 (define objects '(
-                  (2 "a key")
-                  (3 "a piece of paper")
-                  (5 "a teleporter")))
+                  (3 "a key")
+                  (4 "a piece of paper")
+                  (6 "a teleporter")))
+
 
 
 ;; Association list: list of paired cons forming a table
 ;; This describes the room
-(define descriptions '((1 "What..... \nWhat is happening?... \nWhere am I?.....\nI should probably 'look' around.")
+(define descriptions '((1 "Test")
+                       (2 "What..... \nWhat is happening?... \nWhere am I?.....\nI should probably 'look' around.")
                        ;; Prison Cell
-                       (2 "OH!... \nI am in the prison cell! \nHow did I get here?....\nI need to get out! \nThis guard appears to be asleep.\n")
-                       (3 ">>> You are in the hall <<<
+                       (3 "OH!... \nI am in the prison cell! \nHow did I get here?....\nI need to get out! \nThis guard appears to be asleep.\n")
+                       (4 ">>> You are in the hall <<<
                          \nBoy: James.... I have been waiting for so long. Don't ask any question and take what is in my pocket.\n")
-                       (4 ">>> You are in an ancient church where a woman approaches you<<< \nWoman: Well well hello Mr James..\nYou probably wonder who I am right? ")
+                       (5 ">>> You are in an ancient church where a woman approaches you<<< \nWoman: Well well hello Mr James..\nYou probably wonder who I am right? ")
                        ;; If the user answers YES
-                       (5 "Woman: Your curiosity does not surprise me.\nJane: I am Jane and I am the reason you are here...")
+                       (6 "Woman: Your curiosity does not surprise me.\nJane: I am Jane and I am the reason you are here...")
                        ;; ELSE
-                       (6 "How rude! I knew I shouldn't have left you alive.\n>>The woman pushes you in a sea of sharks<<\n GAME OVER!")))
+                       (7 "How rude! I knew I shouldn't have left you alive.\n>>The woman pushes you in a sea of sharks<<\n GAME OVER!")))
 
 
 ;; Actions 
@@ -91,13 +93,13 @@
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing
-(define decisiontable `((1 ((a beam of light at the end of the room) 2) ,@actions)
-                        (2 ((an entrance to a hall) 3) ((a tunnel) 4) ,@actions)
-                        (3 ((a front door) 4) ((a back door) 2) ,@actions)
-                        (4 ((yes) 5) ((no) 6) ((I don't care) 6))
-                        (5 ((south west) 3) ,@actions)
-                        (6 ((south west) 3) ,@quit)))
-
+(define decisiontable `((1 ((start) 2) ,@help ,@quit)
+                        (2 ((a beam of light at the end of the room) 3) ,@actions)
+                        (3 ((an entrance to a hall) 4) ((a tunnel) 5) ,@actions)
+                        (4 ((a front door) 5) ((a back door) 3) ,@actions)
+                        (5 ((yes) 6) ((no) 7) ((I don't care) 7))
+                        (6 ((south west) 4) ,@actions)
+                        (7 ((south west) 4) ,@quit)))
 
 #|============================================================================================================|#
 
@@ -201,6 +203,8 @@
 ;;------------------------------------------------------------------------------------------------------------------
 
 (define (display-help)
+  (stop)
+           (play miss-racket)
   (printf "\nINSTRUCTIONS
 =================
 Welcome to Logic Invation MUD.\n
@@ -421,6 +425,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 ;; Adds the objects to the database before the game starts
 (add-objects objectdb)
 (draws-sprite startscreen (pos 0 0))
+(play menu-sound)
 (send (gamestart 1) start 100)
 
 
