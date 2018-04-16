@@ -175,7 +175,7 @@
              (hash-set! db 'bag result))))))
 
 ;; Dropping objects
-(define (put-item id input)
+(define (drop-item id input)
   (let ((item (string-join (cdr (string-split input)))))
     (remove-object-from-inventory inventorydb id item)))            
 
@@ -320,8 +320,9 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 #|===================================================== GAME LOOP =================================================|#
 
-(define (startgame initial-id)
-  (let loop ((id initial-id) (description #t))
+
+(define (gamestart initial-id)
+    (let loop ((id initial-id) (description #t))
     (if description
         ;; If there is an available description, shows it on the screen
         (get-location id)
@@ -333,9 +334,27 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
            (string-tokens (string-tokenize input))
            ;; Creates a list of symbols(not strings) with the input. This is needed to compare the entry with our predefined lists
            (tokens (map string->symbol string-tokens)))
-      ;; Decides which action response corresponds to. One of the most important calls in the code 
+      ;; Decides which action response corresponds to. One of the most important calls in the code
       (let ((response (lookup id tokens)))
-        ;; (printf "Input: ~a\nTokens: ~a\nResponse: ~a\n" input tokens response)
+                (cond
+          ((eq? response 1 )
+           ((draws-sprite wake-up (pos 0 0)))))  
+        (cond
+          ((eq? response 2 )
+           (draws-sprite wake-up (pos 0 0))))
+        (cond
+          ((eq? response 3 )
+           (stop)
+           (draws-sprite room2 (pos 0 0))          
+           (draws-sprite key (pos 370 350))
+           ))
+        (cond
+          ((eq? response 4 )
+           (draws-sprite wake-up (pos 0 0))))
+        (cond
+          ((eq? response 5 )
+           (draws-sprite wake-up (pos 0 0))))
+        ;(printf "Input: ~a\nTokens: ~a\nResponse: ~a\n" input tokens response)
         (cond ((number? response)
                (loop response #t))
               ;; If response meaning couldn't be found after the lookup function, shows error message
@@ -345,17 +364,30 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
               ;; Response action is look at around the room for directions
               ((eq? response 'look)
                ;; Retrieve possible directions
+               (cond
+          ((eq? id 2 )
+           (draws-sprite beam (pos 0 0))))
                (get-directions id)
+               
                (loop id #f))
+              
               ;; Response action is to pick an item
               ((eq? response 'pick)
+               (cond
+               [(eq? id 3) (draws-sprite guard (pos 0 0))])
                ;; Pick up item
                (pick-item id input)
                (loop id #f))
               ;; Response action is to drop an item
-              ((eq? response 'put)
+              ((eq? response 'drop)
                ;; Drop item
-               (put-item id input)
+               
+               (set! key (read-bitmap "./key.png"))
+               (cond
+
+                 [(eq? id 3) (draws-sprite key (pos 370 350))])
+                                           
+               (drop-item id input)
                (loop id #f))
               ;; Response action is to show inventory
               ((eq? response 'inventory)
@@ -364,18 +396,27 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
                (loop id #f))
               ;; Response action is to display the help file
               ((eq? response 'help)
-               ;; Displays Help text on the screen
-               (display-help)
-               (loop id #f))
+                ;; Displays Help text on the screen
+                (display-help)
+                (loop id #f))
               ;; Exit game command
               ((eq? response 'quit)
                ;; Exit the application
-               (format #t "So long Franck....")
+               (import:message-box "Bye" "Bye bye" #f '(ok))
+               (send frame show #f)
+               (stop)
                (exit)))))))
-               
+
+;(set! sword (read-bitmap "./monster.png"))
+
+
 #|=================================================================================================================|#
+
+
 
 ;; Adds the objects to the database before the game starts
 (add-objects objectdb)
+(draws-sprite startscreen (pos 0 0))
+(send (gamestart 1) start 100)
 
-(startgame 1)
+
