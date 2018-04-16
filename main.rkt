@@ -1,6 +1,6 @@
 #lang racket
 ;; Dependencies
-(require (prefix-in picy: racket/gui))
+(require (prefix-in import: racket/gui))
 (require racket/draw)
 (require srfi/1)
 (require srfi/13)
@@ -23,11 +23,33 @@
 (define wake-up (read-bitmap "./images/wakeup.jpg"))
 (define guard (read-bitmap "./images/guard.jpg"))
 
-(define frame (new picy:frame%
+(define LEAD-TIME (* 1/10 44100))
+
+(struct pos (x y))
+
+(define frame (new import:frame%
                    [label "LOGIC INVASION"]
                    [width screen_width]
                    [height screen_height])
   )
+
+(define (draws-sprite sprite poss)
+  (send dc draw-bitmap sprite (pos-x  poss) (pos-y poss))
+  )
+
+(define msg (new import:message% [parent frame] [label ""]))
+(define (canvas-key frame) (class import:canvas%
+                             (define/override (on-char key-event)
+                               (cond
+                                 [else (send msg set-label "Others")]))
+                             (super-new [parent frame])))
+
+
+(define canvas ( new (canvas-key frame)))
+(define dc (send canvas get-dc))
+(send frame show #t)
+
+
 
 #|===================================================== DATA =================================================|#
 ;; Association list

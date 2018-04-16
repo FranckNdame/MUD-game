@@ -1,9 +1,9 @@
-# version 0.3.3
+# version 0.3.4
 =======================
 
 Update:
 
 
-*	The 'images' folder was added to the repository. 
+*	Functions 'pos', 'LEAD-TIME', 'draw-sprite', 'msg', 'canvas-key', 'canvas' and 'dc' were added.
 
 
