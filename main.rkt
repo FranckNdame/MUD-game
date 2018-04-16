@@ -8,6 +8,10 @@
 (require rsound)
 (define stream (make-pstream))
 
+
+(define menu-sound (rs-read "menu-sound3.wav"))
+(define miss-racket (rs-read "help-ai.wav"))
+
 (define width 50)
 (define height 33)
 (define done 16)

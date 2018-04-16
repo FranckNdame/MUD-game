@@ -1,9 +1,8 @@
-# version 0.3.5
+# version 0.4.0
 =======================
 
 Update:
 
 
-*	The main function has been updated and changed to gamestart. This function implements different images at different rooms in the GUI.
-
+*	import sounds from the 'sounds' folder using the rs (racket-sound) read method.
 
