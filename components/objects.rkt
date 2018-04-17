@@ -2,10 +2,6 @@
 ;; i)   Objects
 ;;------------------------------------------------------------------------------------------------------------------
 
-;; Creating the object database
-(define objectdb (make-hash))
-;; Creating the inventory database
-(define inventorydb (make-hash))
 
 
 

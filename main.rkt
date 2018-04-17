@@ -16,7 +16,7 @@
 (include "components/location.rkt")
 
 
-
+#|====== IMPORT SOUND ======|#
 (define menu-sound (rs-read "sounds/menu-sound3.wav"))
 (define miss-racket (rs-read "sounds/help-ai.wav"))
 
@@ -33,8 +33,8 @@ Welcome to Logic Invation MUD.\n
 
 * GAME OBJECTIVE
   ===============
-  The game objective is to activate the nether portal to escape the maze. 
-  To be able to open the portal, you must find the Interdimensional Communicator
+  The game objective is to escape the maze. 
+  To be able to open the gate, you must find a key
   in one of the maze rooms.\n\n
 
 * VALID COMMANDS
