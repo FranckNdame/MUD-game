@@ -25,6 +25,15 @@
 (define objectdb (make-hash))
 ;; Creating the inventory database
 (define inventorydb (make-hash))
+;; Creating a database to store room names
+(define rooms (make-hash))
+
+#|====== MAZE ======|#
+;; Build the maze
+(define m (build-maze X Y))
+;; Define gatekey
+(define gatekey "")
+
 
 
 

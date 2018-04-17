@@ -86,6 +86,50 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
          (index (index-of-largest-number (list-of-lengths keylist tokens)))) (if index
                                                                                  (cadr (list-ref record index)) #f)))
 
+
+
+;; Randomly allocates something to a position in the maze
+(define (random-allocator db types rate)
+  (for ((j X))
+    (for ((i Y))
+      (cond ((<= (random 100) rate)
+             (cond((equal? db rooms) ; add the name to the room
+                   (hash-set! db (list j i) (car( ass-ref types (random (- (length types) 1)) assq))))
+                  (else ;add to objectdb
+                   (add-object db (list j i) (car (ass-ref types (random (- (length types) 1)) assq))))))))))
+
+
+;; This function will place one unit of each type of key randomly on the maze
+(define (random-key-location db types)
+  (for ((i (length types)))
+    (add-object db (list (random X) (random Y)) (car (ass-ref types i assq)))))
+
+
+
+(define (call-actions id tokens func)
+  (let* ((record (ass-ref decisiontable 1 assv)) ;;get the references
+         (keylist (get-keywords 1)) ;;get the keywords
+         ;;description in the functions
+         (index (index-of-largest-number (list-of-lengths keylist tokens)))) 
+    (if index 
+        (func (list-ref record index)) ;;return result if match, return false if dont
+        #f)))
+
+
+;; Check if the palyer has the required key to unlock the door
+(define (door-handle gatekey)
+  (printf "You can see the exit gate, but it is locked. \n")
+  (cond ((hash-has-key? inventorydb 'bag)
+         (let* ((record (hash-ref inventorydb 'bag)) ;;get items list in bag
+                (result (remove (lambda (x) (string-suffix-ci? gatekey x)) record)) ;;result = record - bag
+                (item (lset-difference equal? record result))) ;; compare them
+           (cond ((null? item) ;;if there is no difference, the key was removed, return true
+               #t))))
+        (else
+         #f)))
+
+
+
 ;;------------------------------------------------------------------------------------------------------------------
 
 #|=================================================================================================================|#
