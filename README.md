@@ -1,6 +1,6 @@
-# version 0.6.2
+# version 0.6.3
 =======================
 
 Update:
 
-*	Enhance the maze layout
+*	Added images to every room in the maze

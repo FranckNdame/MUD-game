@@ -20,8 +20,8 @@
                     (3 "corridor")
                     (4 "lobby" )
                     (5 "prison cell")
-                    (6 "court" )
-                    (7 "pass" )))
+                    (6 "ancient factory" )
+                    (7 "patient room" )))
 
 
 

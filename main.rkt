@@ -124,13 +124,14 @@ Welcome to Logic Invation MUD.\n
 
       (cond
 
-        [(equal? (hash-ref rooms rid) "Entrance") (draws-sprite image3 (pos 0 0))]
-        [(equal? (hash-ref rooms rid) "hall") (draws-sprite room1 (pos 0 0))]
-        [(equal? (hash-ref rooms rid) "hallway") (draws-sprite room2 (pos 0 0))]
-        [(equal? (hash-ref rooms rid) "corridor") (draws-sprite room2 (pos 0 0))]
-        [(equal? (hash-ref rooms rid) "lobby") (draws-sprite room2 (pos 0 0))]
-        [(equal? (hash-ref rooms rid) "court") (draws-sprite room2 (pos 0 0))]
-        [(equal? (hash-ref rooms rid) "pass") (draws-sprite room2 (pos 0 0))])
+        [(equal? (hash-ref rooms rid) "Entrance") (draws-sprite entrance (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "hall") (draws-sprite hall (pos 0 0))] ;done
+        [(equal? (hash-ref rooms rid) "hallway") (draws-sprite hallway (pos 0 0))] ;done
+        [(equal? (hash-ref rooms rid) "corridor") (draws-sprite corridor (pos 0 0))] ;done
+        [(equal? (hash-ref rooms rid) "lobby") (draws-sprite lobby (pos 0 0))] 
+        [(equal? (hash-ref rooms rid) "ancient factory") (draws-sprite ancient-fac (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "patient room") (draws-sprite hs (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "prison cell") (draws-sprite prison (pos 0 0))])
       
       
       (printf "You are in the ~a \n>" (hash-ref rooms rid))

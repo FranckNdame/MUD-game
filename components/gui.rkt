@@ -38,5 +38,14 @@
 (define room1 (read-bitmap "./images/beam.jpg"))
 (define room2 (read-bitmap "./images/wakeup.jpg"))
 (define image3 (read-bitmap"./images/guard.jpg"))
-(define startscreen (read-bitmap "./images/startscreen.jpg"))
+
+(define startscreen (read-bitmap "./images/startscreen.jpg")) ;done
+(define corridor (read-bitmap "./images/corridor.jpg")) ;done
+(define hallway (read-bitmap "./images/hallway.jpg")) ;done
+(define hall (read-bitmap "./images/hall.jpg")) ;done
+(define entrance (read-bitmap "./images/entrance.jpg")) ;done
+(define ancient-fac (read-bitmap "./images/ancient-factory.jpg")) ;dom
+(define hs (read-bitmap "./images/hs.jpg")) ;done
+(define prison (read-bitmap "./images/prison.jpg")) ;done
+(define lobby (read-bitmap "./images/lobby.jpg"))
 
