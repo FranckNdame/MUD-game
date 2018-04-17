@@ -1,26 +1,19 @@
-
+#|====== DATA ======|#
 ;; Association list
 ;; Describes the objects
-(define objects '(
-                  (3 "a key")
-                  (4 "a piece of paper")
-                  (6 "a teleporter")))
+(define objects '((0 "a steel bar")
+                  (1 "a bulb")
+                  (2 "a piece of bread")
+                  (3 "a rope")
+                  (4 "a broken key")
+                  (5 "a pass")
+                  (6 "a bottle of water")))
 
+(define key_objects '((0 "a key")
+                      (1 "a pass")
+                      (2 "a white key")
+                      (3 "a black key")))
 
-
-;; Association list: list of paired cons forming a table
-;; This describes the room
-(define descriptions '((1 "Test")
-                       (2 "What..... \nWhat is happening?... \nWhere am I?.....\nI should probably 'look' around.")
-                       ;; Prison Cell
-                       (3 "OH!... \nI am in the prison cell! \nHow did I get here?....\nI need to get out! \nThis guard appears to be asleep.\n")
-                       (4 ">>> You are in the hall <<<
-                         \nBoy: James.... I have been waiting for so long. Don't ask any question and take what is in my pocket.\n")
-                       (5 ">>> You are in an ancient church where a woman approaches you<<< \nWoman: Well well hello Mr James..\nYou probably wonder who I am right? ")
-                       ;; If the user answers YES
-                       (6 "Woman: Your curiosity does not surprise me.\nJane: I am Jane and I am the reason you are here...")
-                       ;; ELSE
-                       (7 "How rude! I knew I shouldn't have left you alive.\n>>The woman pushes you in a sea of sharks<<\n GAME OVER!")))
 
 ;; Actions 
 (define look '(((directions) look) ((look) look) ((examine room) look)))

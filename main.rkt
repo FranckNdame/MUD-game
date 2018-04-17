@@ -20,9 +20,13 @@
 (define menu-sound (rs-read "sounds/menu-sound3.wav"))
 (define miss-racket (rs-read "sounds/help-ai.wav"))
 
+#|====== DATABASE ======|#
+;; Creating the object database
+(define objectdb (make-hash))
+;; Creating the inventory database
+(define inventorydb (make-hash))
 
-;; Instructions
-;;------------------------------------------------------------------------------------------------------------------
+
 
 (define (display-help)
   (stop)

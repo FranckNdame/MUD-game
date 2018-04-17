@@ -1,10 +1,10 @@
-# version 0.5.2
+# version 0.5.3
 =======================
 
 Update:
 
-*	Define the function 'evaluate' which checks if a and be are equal and returns 'bag or the id in order to avoid repetition in removing objects from the bag.
+*	Update 'objects'.
 
-*	Updated 'display-objects' and 'remove-object' functions.
+*	Add 'key_objects',
 
-*	Define the function 'handle-item'.
+*	Delete 'descriptions'
