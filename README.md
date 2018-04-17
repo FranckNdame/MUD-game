@@ -1,12 +1,10 @@
-# version 0.5.1
+# version 0.5.2
 =======================
 
 Update:
 
+*	Define the function 'evaluate' which checks if a and be are equal and returns 'bag or the id in order to avoid repetition in removing objects from the bag.
 
-*	Updated instructions.
+*	Updated 'display-objects' and 'remove-object' functions.
 
-*	Add the 'maze.rkt' file to the 'components' folder.
-
-*	Add 'maze.rkt' to the repository.;; a dictionary is an instance of a datatype that maps to values
-.
+*	Define the function 'handle-item'.
