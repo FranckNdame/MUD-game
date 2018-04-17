@@ -1,6 +1,6 @@
-# version 0.6.0
+# version 0.6.1
 =======================
 
 Update:
 
-*	Update the game loop including the maze.
+*	Fix errors such as not being able to move in the maze.

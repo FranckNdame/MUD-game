@@ -64,16 +64,21 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 
 ;; This function will match a list of keywords against a list of tokens
 ;; outputs a list in the form: (0 0 0 2 0 0)
-(define (list-of-lengths keylist tokens) (map
-                                          (lambda (x)
-                                            (let ((set (lset-intersection eq? tokens x)))
-                                              ;; apply some weighting to the result
-                                              (* (/ (length set) (length x)) (length set)))) keylist ))
+(define (list-of-lengths keylist tokens)
+  (map 
+   (lambda (x)
+     (let ((set (lset-intersection eq? tokens x)))
+       (* (/ (length set) (length x)) (length set))))
+   keylist))
 
-;; This function will return the position of the largest integer in the list
-(define (index-of-largest-number list-of-numbers) (let ((n (car (sort list-of-numbers >))))
-                                                    (if (zero? n) #f
-                                                        (list-index (lambda (x) (eq? x n)) list-of-numbers))))
+;return the index of the highest number on the list provided by the function
+;(list-of-lenghts)
+(define (index-of-largest-number list-of-numbers)
+  (let ((n (car (sort list-of-numbers >))))
+    (if (zero? n)
+        #f
+        (list-index (lambda (x) (eq? x n)) list-of-numbers))))
+
 
 
 

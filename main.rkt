@@ -14,6 +14,7 @@
 (include "components/gui.rkt")
 (include "components/data.rkt")
 (include "components/location.rkt")
+(include "components/maze.rkt")
 
 
 #|====== IMPORT SOUND ======|#
@@ -189,6 +190,7 @@ Welcome to Logic Invation MUD.\n
             
               ((eq? response 'quit)
                (format #t "So Long Franck...\n")
+               (stop)
                (exit))
             
               ((eq? response 'drop)
@@ -196,17 +198,11 @@ Welcome to Logic Invation MUD.\n
                (handle-item 'bag rid input)
                (loop rid)))))))
 
-#|=======================================================================|#
 
 
-#|================= START GAME =================|#
 
-;; Adds the objects to the database before the game starts
 
-;(play menu-sound)
+#|====== START GAME ======|#
+(play menu-sound)
 (startgame-maze)
-;(send (gamestart 1) start 100)
-
-#|==============================================|#
-
 

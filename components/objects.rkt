@@ -66,38 +66,12 @@
 
 
 
-;; Removing objects from the inventory
-(define (remove-object-from-inventory db id str)
-  (when (hash-has-key? db 'bag)
-    (let* ((record (hash-ref db 'bag))
-           (result (remove (lambda (x) (string-suffix-ci? str x)) record))
-           (item (lset-difference equal? record result)))
-      (cond ((null? item)
-             (printf "You are not carrying that item!\n"))
-            (else
-             (printf "Removed ~a from your bag.\n" (first item))
-             (add-object objectdb id (first item))
-             (hash-set! db 'bag result))))))
-
-
 (define (handle-item from id input)
   (if(eq? from 'bag)
     (remove-object inventorydb id 'bag input)
     (remove-object objectdb id 'room input)))
 
 
-
-;; Dropping objects
-(define (drop-item id input)
-  (let ((item (string-join (cdr (string-split input)))))
-    (remove-object-from-inventory inventorydb id item)))            
-
-#|
-;; Picking objects
-(define (pick-item id input)
-  (let ((item (string-join (cdr (string-split input)))))
-    (remove-object-from-room objectdb id item)))
-|#
 ;; Display bag
 (define (display-inventory)
   (display-objects inventorydb 'bag))

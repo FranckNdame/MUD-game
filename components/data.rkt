@@ -36,7 +36,7 @@
 (define mazemap '(((map) mazemap) ((show map) mazemap)((see map) mazemap) ((look map) mazemap)))
 
 ;; List of pairs constructed with quasiquote and unquote-splicing
-(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions))
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing
