@@ -1,6 +1,6 @@
-# version 0.6.1
+# version 0.6.2
 =======================
 
 Update:
 
-*	Fix errors such as not being able to move in the maze.
+*	Enhance the maze layout

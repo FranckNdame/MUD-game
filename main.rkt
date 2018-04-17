@@ -6,8 +6,11 @@
 (require srfi/13)
 (require srfi/48)
 (require rsound)
-(define stream (make-pstream))
+(require racket/date)
 
+
+
+(define stream (make-pstream))
 ;; Include external files
 
 (include "components/objects.rkt")
@@ -112,7 +115,7 @@ Welcome to Logic Invation MUD.\n
 
            (cond
 
-             [(equal? rid '(0 0)) (printf "hello\n")]
+             [(equal? rid '(0 0)) (current-date)]
              [(equal? rid '(0 1)) (printf "world\n")]
              [(equal? rid '(0 2)) (printf "bye\n")])
              
@@ -203,6 +206,13 @@ Welcome to Logic Invation MUD.\n
 
 
 #|====== START GAME ======|#
-(play menu-sound)
-(startgame-maze)
+(printf "Start time: ")
+(date->string (current-date) #t)
+(draws-sprite startscreen (pos 0 0))
+;;(play menu-sound)
+
+(define run
+  (let ((input (read)))
+  (cond ((eq? input 'start) (and (stop) (startgame-maze)))))) 
+
 
