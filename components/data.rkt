@@ -14,6 +14,16 @@
                       (2 "a white key")
                       (3 "a black key")))
 
+(define room-type '((0 "Entrance")
+                    (1 "hall")
+                    (2 "hallway")
+                    (3 "corridor")
+                    (4 "lobby" )
+                    (5 "prison cell")
+                    (6 "court" )
+                    (7 "pass" )))
+
+
 
 ;; Actions 
 (define look '(((directions) look) ((look) look) ((examine room) look)))
@@ -22,16 +32,14 @@
 (define put '(((put) drop) ((drop) drop) ((place) drop) ((remove) drop)))
 (define inventory '(((inventory) inventory) ((bag) inventory)))
 (define help '(((help) help) ((instructions) help)))
+(define directions '(((south) direction) ((north) direction) ((west) direction) ((east) direction)))
+(define mazemap '(((map) mazemap) ((show map) mazemap)((see map) mazemap) ((look map) mazemap)))
 
 ;; List of pairs constructed with quasiquote and unquote-splicing
-(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap))
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing
-(define decisiontable `((1 ((start) 2) ,@help ,@quit)
-                        (2 ((a beam of light at the end of the room) 3) ,@actions)
-                        (3 ((an entrance to a hall) 4) ((a tunnel) 5) ,@actions)
-                        (4 ((a front door) 5) ((a back door) 3) ,@actions)
-                        (5 ((yes) 6) ((no) 7) ((I don't care) 7))
-                        (6 ((south west) 4) ,@actions)
-                        (7 ((south west) 4) ,@quit)))
+(define decisiontable `((1 ,@actions)
+                        (2 ((south) 1) ,@actions )
+                        (3 ,@actions)))

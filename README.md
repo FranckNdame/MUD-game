@@ -1,10 +1,7 @@
-# version 0.5.3
+# version 0.5.4
 =======================
 
 Update:
 
-*	Update 'objects'.
+*	Update data.rkt
 
-*	Add 'key_objects',
-
-*	Delete 'descriptions'
