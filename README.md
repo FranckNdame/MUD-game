@@ -1,11 +1,6 @@
-# version 0.5.5
+# version 0.5.6
 =======================
 
 Update:
 
-*	Define 'door-handle' and 'call-action' in the location.rkt file.
-
-*	Define start point to determine the players' location.
-
-*	Define a maze 'm' and create a database to store room names.
-
+*	Use the random-allocator function to randomly allocated names, objects and keys to the rooms.

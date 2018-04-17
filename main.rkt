@@ -34,6 +34,19 @@
 ;; Define gatekey
 (define gatekey "")
 
+#|====== PLAYER LOCATION ======|#
+(define (startpoint)
+  (let*((start_x (random X))
+        (start_y (random Y)))
+  (list start_x start_y)))
+
+#|====== RANDOM ALLOCATIONS ======|#
+;; Allocate names to the rooms
+(random-allocator rooms room-type 100)
+;; Allocate objects to the rooms
+(random-allocator objectdb objects 50)
+;; Allocate keys to the rooms
+(random-key-location objectdb key_objects)   
 
 
 
