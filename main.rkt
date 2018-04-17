@@ -40,6 +40,23 @@
         (start_y (random Y)))
   (list start_x start_y)))
 
+;; Randomly allocates something to a position in the maze
+(define (random-allocator db types rate)
+  (for ((j X))
+    (for ((i Y))
+      (cond ((<= (random 100) rate)
+             (cond((equal? db rooms) ; add the name to the room
+                   (hash-set! db (list j i) (car( ass-ref types (random (- (length types) 1)) assq))))
+                  (else ;add to objectdb
+                   (add-object db (list j i) (car (ass-ref types (random (- (length types) 1)) assq))))))))))
+
+
+;; This function will place one unit of each type of key randomly on the maze
+(define (random-key-location db types)
+  (for ((i (length types)))
+    (add-object db (list (random X) (random Y)) (car (ass-ref types i assq)))))
+
+
 #|====== RANDOM ALLOCATIONS ======|#
 ;; Allocate names to the rooms
 (random-allocator rooms room-type 100)
@@ -75,97 +92,109 @@ Welcome to Logic Invation MUD.\n
 
 ;;------------------------------------------------------------------------------------------------------------------
 
+(define (startgame-maze)
+  ;(even? 5)
+  (let* ((gatekey (car (ass-ref key_objects (random(length key_objects)) assq)))
+         (gate_x 4)
+         (gate_y 4)
+         (start '(0 0)))
+   ;;the following prints will help with testing, telling the developer where the gate is located and what key is the right one
+    ;(printf "~a \n" gate_x)
+    ;(printf "~a \n" gate_y)
+    ;(printf "~a \n" gatekey)
+    ;(printf "~a \n " start)
+    ;(printf "\n")
+    
+    
+    (let loop ((rid start))
+      (show-maze m rid)
 
-#|================= GAME LOOP =================|#
+           (cond
+
+             [(equal? rid '(0 0)) (printf "hello\n")]
+             [(equal? rid '(0 1)) (printf "world\n")]
+             [(equal? rid '(0 2)) (printf "bye\n")])
+             
+
+             
+
+      (cond
+
+        [(equal? (hash-ref rooms rid) "Entrance") (draws-sprite image3 (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "hall") (draws-sprite room1 (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "hallway") (draws-sprite room2 (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "corridor") (draws-sprite room2 (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "lobby") (draws-sprite room2 (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "court") (draws-sprite room2 (pos 0 0))]
+        [(equal? (hash-ref rooms rid) "pass") (draws-sprite room2 (pos 0 0))])
+      
+      
+      (printf "You are in the ~a \n>" (hash-ref rooms rid))
+
+      (let* ((input (read-line))
+             (string-tokens (string-tokenize input))
+             (tokens (map string->symbol string-tokens))
+             (response (call-actions rid tokens cadr))) ;;get action
+        
 
 
-(define (gamestart initial-id)
-  (let loop ((id initial-id) (description #t))
-    (if description
-        ;; If there is an available description, shows it on the screen
-        (get-location id)
-        ;; Else statement. Don't show location(because there isn't any description). Just shows the greater than symbol to incite user to type in text field
-        (printf "> "))
-    ;; Read input from the keyboard
-    (let* ((input (read-line))
-           ;; Function contained in the srfi/13 library, tokenize the input into substrings where a space character is found
-           (string-tokens (string-tokenize input))
-           ;; Creates a list of symbols(not strings) with the input. This is needed to compare the entry with our predefined lists
-           (tokens (map string->symbol string-tokens)))
-      ;; Decides which action response corresponds to. One of the most important calls in the code
-      (let ((response (lookup id tokens)))
-        (cond
-          ((eq? response 1 )
-           ((draws-sprite wake-up (pos 0 0)))))  
-        (cond
-          ((eq? response 2 )
-           (draws-sprite wake-up (pos 0 0))))
-        (cond
-          ((eq? response 3 )
-           (stop)
-           (draws-sprite room2 (pos 0 0))          
-           (draws-sprite key (pos 370 350))
-           ))
-        (cond
-          ((eq? response 4 )
-           (draws-sprite wake-up (pos 0 0))))
-        (cond
-          ((eq? response 5 )
-           (draws-sprite wake-up (pos 0 0))))
-        ;(printf "Input: ~a\nTokens: ~a\nResponse: ~a\n" input tokens response)
-        (cond ((number? response)
-               (loop response #t))
-              ;; If response meaning couldn't be found after the lookup function, shows error message
-              ((eq? #f response)
-               (format #t "Huh? I didn't understand that!\n")
-               (loop id #f))
-              ;; Response action is look at around the room for directions
-              ((eq? response 'look)
-               ;; Retrieve possible directions
-               (cond
-                 ((eq? id 2 )
-                  (draws-sprite beam (pos 0 0))))
-               (get-directions id)
-               
-               (loop id #f))
+      
+        (cond ((eq? response 'direction)
+               (let* ((direction (call-actions rid tokens caar)) ;get direction typed
+                      (newlocation (move-room rid direction)))  ;get future location after move
+                 (cond((member direction (paths rid)) ;check if direction is in path
+                       (cond ((equal? newlocation (list gate_x gate_y)) ;end of game condition
+                              (cond ((not (door-handle gatekey))
+                                     (printf "It seems that you don't have the key to open the gate. \n")
+                                     (loop newlocation))
+                                    (else
+                                     (printf "You used the key to open the gate. You are free! \n")
+                                     (exit))))
+                         (else
+                          (loop newlocation))));;not in the gate
+   
+                      (else ;;direction not in path
+                       (printf "You can not go that way!\n")
+                       (loop rid)))))
+
               
-              ;; Response action is to pick an item
+              ((eq? #f response)
+               (format #t "I am sorry, but I didn't understand that!\n")
+               (loop rid))
+
+              
+              ((eq? response 'start)
+               (printf "heloooooo")
+               (loop rid))
+            
+              ((eq? response 'look)
+              (show-maze m rid)
+               (display-objects objectdb rid)
+               (loop rid))
+              ((eq? response 'mazemap)
+               (show-maze m rid)
+              (display-objects objectdb rid)
+               (loop rid))
+            
               ((eq? response 'pick)
-               (cond
-                 [(eq? id 3) (draws-sprite guard (pos 0 0))])
-               ;; Pick up item
-               (pick-item id input)
-               (loop id #f))
-              ;; Response action is to drop an item
-              ((eq? response 'drop)
-               ;; Drop item
-               
-               (set! key (read-bitmap "./key.png"))
-               (cond
+             ;remove item from room and put into inventory
+               (handle-item 'room rid input)
+               (loop rid))
 
-                 [(eq? id 3) (draws-sprite key (pos 370 350))])
-                                           
-               (drop-item id input)
-               (loop id #f))
-              ;; Response action is to show inventory
+
+            
               ((eq? response 'inventory)
-               ;; Displays the inventory
-               (display-inventory)
-               (loop id #f))
-              ;; Response action is to display the help file
-              ((eq? response 'help)
-               ;; Displays Help text on the screen
-               (display-help)
-               (loop id #f))
-              ;; Exit game command
+               (display-inventory) ;;show inventorydb
+               (loop rid))
+            
               ((eq? response 'quit)
-               ;; Exit the application
-               (import:message-box "Bye" "Bye bye" #f '(ok))
-               (send frame show #f)
-               (stop)
-               (exit)))))))
-
-
+               (format #t "So Long Franck...\n")
+               (exit))
+            
+              ((eq? response 'drop)
+               ;remove item from inventory and drop on the current room
+               (handle-item 'bag rid input)
+               (loop rid)))))))
 
 #|=======================================================================|#
 
@@ -173,10 +202,10 @@ Welcome to Logic Invation MUD.\n
 #|================= START GAME =================|#
 
 ;; Adds the objects to the database before the game starts
-(add-objects objectdb)
-(draws-sprite startscreen (pos 0 0))
-(play menu-sound)
-(send (gamestart 1) start 100)
+
+;(play menu-sound)
+(startgame-maze)
+;(send (gamestart 1) start 100)
 
 #|==============================================|#
 

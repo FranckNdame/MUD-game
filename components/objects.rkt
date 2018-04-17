@@ -92,12 +92,12 @@
   (let ((item (string-join (cdr (string-split input)))))
     (remove-object-from-inventory inventorydb id item)))            
 
-
+#|
 ;; Picking objects
 (define (pick-item id input)
   (let ((item (string-join (cdr (string-split input)))))
     (remove-object-from-room objectdb id item)))
-
+|#
 ;; Display bag
 (define (display-inventory)
   (display-objects inventorydb 'bag))

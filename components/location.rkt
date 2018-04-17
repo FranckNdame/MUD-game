@@ -2,12 +2,18 @@
 ;; iii)   Location
 ;;------------------------------------------------------------------------------------------------------------------
 
+#|
 ;; This helps in obtaining the user's location through a unique id
 (define (get-location id)
   (printf "~a\n" (car (assq-ref descriptions id)))
   ;; This describe the objects present in the room
   (display-objects objectdb id)
   (printf "> "))
+|#
+
+;; Returns ONLY the second element of the pair as a list
+(define (assq-ref assqlist id)
+  (cdr (assq id assqlist)))
 
 
 
@@ -42,9 +48,6 @@
 #| assq is a derivative of assoc and looks for the first element of a pair in a list which
 is equal to a given atom according to 'eq?'. If such an argument exists, its pair is returned|#
 
-;; Returns ONLY the second element of the pair as a list
-(define (assq-ref assqlist id)
-  (cdr (assq id assqlist)))
 
 ;; Returns ONLY the second element of the pair as a string
 ;(define (get-response id)
@@ -78,6 +81,8 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 (define (assv-ref assvlist id)
   (cdr (assv id assvlist)))
 
+(define (ass-ref assqlist id x)
+  (cdr (x id assqlist)))
 ;; This wrapper function will take an id and a list of tokens
 (define (lookup id tokens)
     ;; Assigns to record a list with the possible actions for the current room
@@ -87,22 +92,6 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
                                                                                  (cadr (list-ref record index)) #f)))
 
 
-
-;; Randomly allocates something to a position in the maze
-(define (random-allocator db types rate)
-  (for ((j X))
-    (for ((i Y))
-      (cond ((<= (random 100) rate)
-             (cond((equal? db rooms) ; add the name to the room
-                   (hash-set! db (list j i) (car( ass-ref types (random (- (length types) 1)) assq))))
-                  (else ;add to objectdb
-                   (add-object db (list j i) (car (ass-ref types (random (- (length types) 1)) assq))))))))))
-
-
-;; This function will place one unit of each type of key randomly on the maze
-(define (random-key-location db types)
-  (for ((i (length types)))
-    (add-object db (list (random X) (random Y)) (car (ass-ref types i assq)))))
 
 
 

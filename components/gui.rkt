@@ -34,11 +34,9 @@
 (define dc (send canvas get-dc))
 (send frame show #t)
 
-
-(define key (read-bitmap "images/key.png"))
+(define key (read-bitmap "./images/key.png"))
+(define room1 (read-bitmap "./images/beam.jpg"))
+(define room2 (read-bitmap "./images/wakeup.jpg"))
+(define image3 (read-bitmap"./images/guard.jpg"))
 (define startscreen (read-bitmap "./images/startscreen.jpg"))
-(define room2 (read-bitmap "./images/guard.jpg"))
-(define beam (read-bitmap "./images/beam.jpg"))
-(define wake-up (read-bitmap "./images/wakeup.jpg"))
-(define guard (read-bitmap "./images/guard.jpg"))
 

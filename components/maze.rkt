@@ -1,8 +1,8 @@
 #|====== DEFINE THE MAZE  ======|#
 
 ;; Maze dimensions
-(define A 5)
-(define B 5)
+(define X 5)
+(define Y 5)
 
 ;; Define the path
 (define (paths start)

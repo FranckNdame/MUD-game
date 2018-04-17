@@ -1,6 +1,6 @@
-# version 0.5.6
+# version 0.6.0
 =======================
 
 Update:
 
-*	Use the random-allocator function to randomly allocated names, objects and keys to the rooms.
+*	Update the game loop including the maze.
