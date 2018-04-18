@@ -48,4 +48,5 @@
 (define hs (read-bitmap "./images/hs.jpg")) ;done
 (define prison (read-bitmap "./images/prison.jpg")) ;done
 (define lobby (read-bitmap "./images/lobby.jpg"))
+(define rip (read-bitmap "./images/rip.jpg"))
 

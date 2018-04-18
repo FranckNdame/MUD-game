@@ -3,4 +3,4 @@
 
 Update:
 
-*	Health system has been implemented
+*	Player dies if health is less or equal to zero
