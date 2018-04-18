@@ -35,9 +35,10 @@
 (define directions '(((south) direction) ((north) direction) ((west) direction) ((east) direction)))
 (define mazemap '(((map) mazemap) ((show map) mazemap)((see map) mazemap) ((look map) mazemap)))
 (define mute '(((mute) stop) ((mute) mute)))
+(define health '(((energy) health) ((health) health)))
 
 ;; List of pairs constructed with quasiquote and unquote-splicing
-(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions ,@mute))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions ,@mute ,@health ))
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing

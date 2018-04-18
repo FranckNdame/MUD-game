@@ -1,10 +1,6 @@
-# version 0.6.4
+# version 0.7.0
 =======================
 
 Update:
 
-*	Sound files were added to the game.
-
-*	The command-line output was enhanced.
-
-*	Added object images
+*	Health system has been implemented
