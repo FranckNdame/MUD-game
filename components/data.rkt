@@ -4,12 +4,12 @@
 (define objects '((0 "a steel bar")
                   (1 "a bulb")
                   (2 "a piece of bread")
-                  (3 "a rope")
-                  (4 "a broken key")
+                  (3 "a torch")
+                  (4 "a key")
                   (5 "a pass")
                   (6 "a bottle of water")))
 
-(define key_objects '((0 "a key")
+(define key_objects '((0 "a broken key")
                       (1 "a pass")
                       (2 "a white key")
                       (3 "a black key")))
@@ -34,9 +34,10 @@
 (define help '(((help) help) ((instructions) help)))
 (define directions '(((south) direction) ((north) direction) ((west) direction) ((east) direction)))
 (define mazemap '(((map) mazemap) ((show map) mazemap)((see map) mazemap) ((look map) mazemap)))
+(define mute '(((mute) stop) ((mute) mute)))
 
 ;; List of pairs constructed with quasiquote and unquote-splicing
-(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions ,@mute))
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing
