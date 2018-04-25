@@ -110,7 +110,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
         #f)))
 
 
-;; Check if the palyer has the required key to unlock the door
+;; Check if the player has the required key to unlock the door
 (define (door-handle gatekey)
   (printf "You can see the exit gate, but it is locked. \n")
   (cond ((hash-has-key? inventorydb 'bag)

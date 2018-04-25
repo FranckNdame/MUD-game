@@ -1,52 +1,44 @@
-
-
 (define width 50)
-(define height 33)
-(define done 16)
-(define message "Welcome To the Dungeon | Please enter a command: ")
-(define screen_width (* width done))
-(define screen_height (* height done))
-
-(define LEAD-TIME (* 1/10 44100))
+(define height 31)
+(define screen_width (* width 16))
+(define screen_height (* height 16))
 
 (struct pos (x y))
 
+;; create a new top-level window
+;; instantiate the frame% class
 (define frame (new import:frame%
                    [label "LOGIC INVASION"]
                    [width screen_width]
-                   [height screen_height])
-  )
+                   [height screen_height]))
 
 (define (draws-sprite sprite poss)
-  (send dc draw-bitmap sprite (pos-x  poss) (pos-y poss))
-  )
+  (send dc draw-bitmap sprite (pos-x  poss) (pos-y poss)))
 
 
-(define msg (new import:message% [parent frame] [label ""]))
+
 (define (canvas-key frame) (class import:canvas%
                              (define/override (on-char key-event)
                                (cond
-                                 [else (send msg set-label "Others")]))
+                                 [else (printf "Others")]))
                              (super-new [parent frame])))
 
-
+;; define canvas
 (define canvas ( new (canvas-key frame)))
 (define dc (send canvas get-dc))
+;; show the frame by calling its show method
 (send frame show #t)
 
-(define key (read-bitmap "./images/key.png"))
-(define room1 (read-bitmap "./images/beam.jpg"))
-(define room2 (read-bitmap "./images/wakeup.jpg"))
-(define image3 (read-bitmap"./images/guard.jpg"))
-
-(define startscreen (read-bitmap "./images/startscreen.jpg")) ;done
-(define corridor (read-bitmap "./images/corridor.jpg")) ;done
-(define hallway (read-bitmap "./images/hallway.jpg")) ;done
-(define hall (read-bitmap "./images/hall.jpg")) ;done
-(define entrance (read-bitmap "./images/entrance.jpg")) ;done
-(define ancient-fac (read-bitmap "./images/ancient-factory.jpg")) ;dom
-(define hs (read-bitmap "./images/hs.jpg")) ;done
-(define prison (read-bitmap "./images/prison.jpg")) ;done
+;; import images
+(define startscreen (read-bitmap "./images/startscreen.jpg"))
+(define corridor (read-bitmap "./images/corridor.jpg")) 
+(define hallway (read-bitmap "./images/hallway.jpg")) ;
+(define hall (read-bitmap "./images/hall.jpg")) ;
+(define entrance (read-bitmap "./images/entrance.jpg")) ;
+(define ancient-fac (read-bitmap "./images/ancient-factory.jpg"))
+(define hs (read-bitmap "./images/hs.jpg")) ;
+(define prison (read-bitmap "./images/prison.jpg")) ;
 (define lobby (read-bitmap "./images/lobby.jpg"))
 (define rip (read-bitmap "./images/rip.jpg"))
+
 
