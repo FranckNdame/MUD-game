@@ -67,7 +67,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
 (define (list-of-lengths keylist tokens)
   (map 
    (lambda (x)
-     (let ((set (lset-intersection eq? tokens x)))
+     (let ((set (import2:lset-intersection eq? tokens x)))
        (* (/ (length set) (length x)) (length set))))
    keylist))
 
@@ -77,7 +77,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
   (let ((n (car (sort list-of-numbers >))))
     (if (zero? n)
         #f
-        (list-index (lambda (x) (eq? x n)) list-of-numbers))))
+        (import2:list-index (lambda (x) (eq? x n)) list-of-numbers))))
 
 
 
@@ -116,7 +116,7 @@ is equal to a given atom according to 'eq?'. If such an argument exists, its pai
   (cond ((hash-has-key? inventorydb 'bag)
          (let* ((record (hash-ref inventorydb 'bag)) ;;get items list in bag
                 (result (remove (lambda (x) (string-suffix-ci? gatekey x)) record)) ;;result = record - bag
-                (item (lset-difference equal? record result))) ;; compare them
+                (item (import2:lset-difference equal? record result))) ;; compare them
            (cond ((null? item) ;;if there is no difference, the key was removed, return true
                #t))))
         (else

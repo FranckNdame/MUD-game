@@ -1,6 +1,4 @@
-# version 0.7.0
-=======================
+# version 0.8.0
+================
 
-Update:
-
-*	Player dies if health is less or equal to zero
+* Moving north and south in the maze bug fixed

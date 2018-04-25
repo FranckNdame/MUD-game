@@ -2,11 +2,13 @@
 ;; Dependencies
 (require (prefix-in import: racket/gui))
 (require racket/draw)
-(require srfi/1)
+;(require racket)
+(require (prefix-in import2: srfi/1))
+;(require (except-in srfi/1 remove))
 (require srfi/13)
 (require srfi/48)
 (require rsound)
-(require racket/date)
+
 
 
 (define stream (make-pstream))
@@ -114,6 +116,7 @@ Welcome to Logic Invation MUD.\n
     (let loop ((rid start))
       ;; display images of the room
       (room_images rid)
+      ;(show-path m '(0 0) '(4 4))
       ;; displays the player's location on launch
       (disp-loc-onlaunch rid)
       ;; assign the variable 'input' to the read-line function
@@ -126,36 +129,7 @@ Welcome to Logic Invation MUD.\n
         (game-over)
 
         ;; handle user input
-        (cond ((eq? response 'direction)
-               (get-direction rid tokens gate_x gate_y loop))
-              
-              ((eq? #f response)
-               (format #t "I am sorry, but I can't quite understand that!\n")(loop rid))
-
-              ((eq? response 'mute)
-               (stop-sound loop rid))
-            
-              ((eq? response 'look)
-               (looking loop rid))
-            
-              ((eq? response 'pick)
-               (handle-item 'room rid input loop rid))
-               
-              ((eq? response 'inventory)
-               (display-objects inventorydb 'bag)
-               (loop rid))
-
-              ((eq? response 'health)
-               (display-health loop rid))
-                
-              ((eq? response 'quit)
-               (format #t "So Long Franck...\n")(stop)(exit))
-
-              ((eq? response 'help)
-               (display-help loop rid))
-
-              ((eq? response 'drop)
-               (handle-item 'bag rid input loop rid)))))))
+        (handle-user-input response rid tokens gate_x gate_y loop input)))))
 
 ;; run the game
 (play-game)
