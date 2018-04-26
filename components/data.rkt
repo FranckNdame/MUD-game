@@ -39,10 +39,11 @@
 (define mazemap '(((map) mazemap) ((show map) mazemap)((see map) mazemap) ((look map) mazemap)))
 (define mute '(((mute) mute)))
 (define health '(((energy) health) ((health) health)))
-(define start '(((start) start) ((go) start)))
+(define start '(((start) start)))
+(define solution '(((solve) solution) ((answer) solution) ((solving) solution) ((solution) solution)))
 
 ;; List of pairs constructed with quasiquote and unquote-splicing
-(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions ,@mute ,@health ,@start ))
+(define actions `(,@look ,@quit ,@pick ,@put ,@inventory ,@help ,@mazemap ,@directions ,@mute ,@health ,@start ,@solution))
 
 
 ;; Decisiontable constructed with quasiquote and unquote-splicing

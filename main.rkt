@@ -98,6 +98,8 @@ Welcome to Logic Invation MUD.\n
           - Enter inventory or bag : Display a list of available items in the bag.
           - Enter health or life : Check your health level.
           - Enter help or instructions : Display instructions.
+          - Enter solve maze or solution : Solves the maze
+          - Enter mute : mutes the audio
           - Enter quit, exit, quit game or exit game) : Quit the application.\n")
   (loop rid))
 
@@ -107,8 +109,8 @@ Welcome to Logic Invation MUD.\n
 (define (startgame-maze)
   (let* ((gatekey (car (ass-ref key_objects (random(length key_objects)) assq)))
          ;; define the ending point
-         (gate_x 4)
-         (gate_y 4)
+         (gate_x 7)
+         (gate_y 7)
          ;; define the starting point
          (start '(0 0)))
     
