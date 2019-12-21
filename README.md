@@ -1,6 +1,5 @@
-# version 0.9.0
-=======================
+# MUD Game
+The project consists of 3 folders (components, images, sounds) which are self explanatory. The components folder contains  the different core racket files (gui, location, main-function, maze, objects). This approach of separating the given code into different files provides a better structure.
 
-*	Add few comments
-
-*	Fix main-function.rkt bug.
+# Scheme
+Scheme is one of the best programming languages when it comes to learning recursion. Scheme avoids putting on a lot of stress on a developer when it comes to thinking about relationships between symbols of its own language and representing it in the computer because scheme is inherently symbolic. Schemes natural computational mechanism is recursion. Scheme implementations are predominantly interactive-the programmer can immediately participate in and observe the behavior of his programs. Since scheme focuses on recursive programming the main features of it are: `car`,` cdr`, `cons`, `eq?`, `null?`, `zero?`, `addl`, `subl`, `number?`, `and`, `or`, `quote`, `lambda`, `define`, and `cond`.
