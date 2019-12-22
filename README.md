@@ -1,4 +1,4 @@
-# MUD Game
+# Multi-User Dungeon Game
 The project consists of 3 folders (components, images, sounds) which are self explanatory. The components folder contains  the different core racket files (gui, location, main-function, maze, objects). This approach of separating the given code into different files provides a better structure.
 
 # Scheme
